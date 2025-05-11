@@ -25,7 +25,7 @@ function WordGuess({ onGuess, disabled }) {
 
     return (
         <div className="text-center">
-            <h5>או נחש את המילה כולה:</h5>
+            <h5>Or guess the whole word:</h5>
             <form onSubmit={handleSubmit}>
                 <div className="input-group justify-content-center">
                     <input

@@ -1,10 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 /*
-import Game from './components/Game';
 import Leaderboard from './components/Leaderboard';
-import WordManagement from './components/WordManagement';
-import About from './components/About';*/
+import WordManagement from './components/WordManagement';*/
 import About from './components/About';
 import Navbar from './components/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
