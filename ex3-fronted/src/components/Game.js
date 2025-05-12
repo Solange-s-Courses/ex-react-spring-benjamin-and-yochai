@@ -268,63 +268,6 @@ function Game() {
             />
         </Layout>
     );
-
-    /*    <div className="container mt-4">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card">
-                        <div className="card-header d-flex justify-content-between align-items-center">
-                            <h2>Word Guessing Game</h2>
-                            <button className="btn btn-danger btn-sm" onClick={handleLeaveGame}>
-                                Leave Game
-                            </button>
-                        </div>
-                        <div className="card-body">
-                            {/* Game info * /}
-                            <GameStats
-                                playerName={state.playerName}
-                                category={state.category}
-                                time={state.gameTime}
-                                attempts={state.attempts}
-                            />
-
-                            {/* Error message * /}
-                            {state.error && state.gameStarted && (
-                                <div className="alert alert-warning alert-dismissible fade show">
-                                    {state.error}
-                                </div>
-                            )}
-
-                            {/* Word display * /}
-                            <WordDisplay displayWord={state.displayWord} />
-
-                            {/* Hint section * /}
-                            <HintSection
-                                showHint={state.showHint}
-                                hint={state.hint}
-                                onShowHint={handleShowHint}
-                            />
-
-                            {/* Letter guessing * /}
-                            {/*<LetterButtons
-                                guessedLetters={state.guessedLetters}
-                                word={state.word}
-                                onGuess={handleLetterGuess}
-                                disabled={state.gameStatus !== GAME_STATUS.PLAYING}
-                            />*/}
-
-                            {/* Word guessing * /}
-                            <WordGuess
-                                onGuess={handleWordGuess}
-                                disabled={state.gameStatus !== GAME_STATUS.PLAYING}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </>
-    );*/
 }
 
 export default Game;
