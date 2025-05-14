@@ -11,7 +11,7 @@ export const GAME_ACTIONS = {
     SHOW_HINT: 'SHOW_HINT',
     UPDATE_TIMER: 'UPDATE_TIMER',
     SET_GAME_STATUS: 'SET_GAME_STATUS',
-    RESET_GAME: 'RESET_GAME',
+    //RESET_GAME: 'RESET_GAME',
     SET_SCORE: 'SET_SCORE',
     CLEAR_ERROR: 'CLEAR_ERROR'
 };
@@ -154,12 +154,12 @@ export const gameReducer = (state, action) => {
                 gameStarted: action.payload === GAME_STATUS.PLAYING
             };
 
-        case GAME_ACTIONS.RESET_GAME:
+        /*case GAME_ACTIONS.RESET_GAME:
             return {
                 ...initialGameState,
                 category: state.category,
                 playerName: state.playerName
-            };
+            };*/
 
         case GAME_ACTIONS.CLEAR_ERROR:
             return {
