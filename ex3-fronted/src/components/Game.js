@@ -1,5 +1,5 @@
-import React, { useReducer, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useReducer } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gameReducer, { initialGameState, GAME_ACTIONS, GAME_STATUS } from '../reducers/gameReducer';
 import WordDisplay from './WordDisplay';
 import HintSection from './HintSection';
@@ -9,7 +9,10 @@ import WordGuess from './WordGuess';
 import GameResult from './GameResult';
 import Layout from "./Layout";
 import { mockAPI } from "../gameData";
-
+import { useGameInitialization } from '../hooks/useGameInitialization';
+import { useGameTimer } from '../hooks/useGameTimer';
+import { useScoreCalculation } from '../hooks/useScoreCalculation';
+import { useErrorHandling } from '../hooks/useErrorHandling';
 
 /**
  * Main Game component that manages the word guessing game with pure reducer
@@ -18,61 +21,13 @@ import { mockAPI } from "../gameData";
  */
 function Game() {
     const navigate = useNavigate();
-    const location = useLocation();
     const [state, dispatch] = useReducer(gameReducer, initialGameState);
-    const timerRef = useRef(null);
-
-    // Initialize game with player data
-    useEffect(() => {
-        if (!location.state || !location.state.playerName || !location.state.category || !location.state.wordData) {
-            navigate('/');
-            return;
-        }
-
-        dispatch({
-            type: GAME_ACTIONS.INIT_GAME,
-            payload: {
-                playerName: location.state.playerName,
-                category: location.state.category,
-                word: location.state.wordData.word,
-                hint: location.state.wordData.hint
-            }
-        });
-
-
-        //startNewGame(location.state.category);
-    }, [location.state, navigate]);
-
-    // Timer effect
-    useEffect(() => {
-        if (state.gameStarted && state.gameStatus === GAME_STATUS.PLAYING) {
-            timerRef.current = setInterval(() => {
-                dispatch({ type: GAME_ACTIONS.UPDATE_TIMER });
-            }, 1000);
-        } else {
-            clearInterval(timerRef.current);
-        }
-
-        return () => clearInterval(timerRef.current);
-    }, [state.gameStarted, state.gameStatus]);
-
-    // Calculate and save score when game is won
-    useEffect(() => {
-        if (state.gameStatus === GAME_STATUS.WON) {
-            calculateAndSaveScore();
-        }
-    }, [state.gameStatus]);
-
-    // Clear error message after 3 seconds
-    useEffect(() => {
-        if (state.error) {
-            const timeout = setTimeout(() => {
-                dispatch({ type: GAME_ACTIONS.CLEAR_ERROR });
-            }, 3000);
-
-            return () => clearTimeout(timeout);
-        }
-    }, [state.error]);
+    
+    // Custom hooks for game logic
+    useGameInitialization(state, dispatch, navigate);
+    useGameTimer(state.gameStatus, dispatch);
+    useScoreCalculation(state.gameStatus, state, dispatch, navigate);
+    useErrorHandling(state.error, dispatch);
 
     /**
      * Start a new game by fetching a random word
@@ -95,43 +50,6 @@ function Game() {
             setTimeout(() => navigate('/'), 3000);
         }
     };*/
-
-    /**
-     * Calculate score and save to local storage
-     * This is a side effect, kept outside the reducer
-     */
-    const calculateAndSaveScore = async () => {
-        // Calculate score logic
-        const baseScore = 1000;
-        const timePenalty = state.gameTime * 2;
-        const attemptsPenalty = state.attempts * 10;
-        const hintPenalty = state.showHint ? 100 : 0;
-
-        const finalScore = Math.max(0, baseScore - timePenalty - attemptsPenalty - hintPenalty);
-
-        // Update score in state
-        dispatch({
-            type: GAME_ACTIONS.SET_SCORE,
-            payload: finalScore
-        });
-
-        // Save score to local storage (side effect)
-        try {
-            const scoreData = {
-                playerName: state.playerName,
-                score: finalScore,
-                category: state.category,
-                word: state.word,
-                attempts: state.attempts,
-                timeInSeconds: state.gameTime,
-                usedHint: state.showHint
-            };
-
-            await mockAPI.saveScore(scoreData);
-        } catch (err) {
-            console.error('Error saving score:', err);
-        }
-    };
 
     /**
      * Handle letter guess
@@ -166,7 +84,6 @@ function Game() {
      * Handle leaving the game
      */
     const handleLeaveGame = () => {
-        clearInterval(timerRef.current);
         navigate('/');
     };
 
@@ -196,7 +113,7 @@ function Game() {
     }
 
     // Error state
-    if (state.error && !state.gameStarted) {
+    if (state.error && state.gameStatus !== GAME_STATUS.PLAYING) {
         return (
             <div className="container text-center mt-5">
                 <div className="alert alert-danger" role="alert">
@@ -222,7 +139,6 @@ function Game() {
 
     // Main game screen
     return (
-
         <Layout title={
             <div className="d-flex justify-content-between align-items-center">
                 <span>Word Guessing Game</span>
@@ -241,7 +157,7 @@ function Game() {
             />
 
             {/* Error message */}
-            {state.error && state.gameStarted && (
+            {state.error && state.gameStatus === GAME_STATUS.PLAYING && (
                 <div className="alert alert-warning alert-dismissible fade show">
                     {state.error}
                 </div>

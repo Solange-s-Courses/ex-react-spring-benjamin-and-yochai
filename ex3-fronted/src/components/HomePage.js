@@ -111,14 +111,14 @@ function HomePage() {
         try{
             //const gameData  = await startNewGame(formData.nickname, formData.category);
             const gameData = await mockAPI.getRandomWord(formData.category);
-
+            console.log("gameData returned from API:", gameData);
 
             navigate('/game', {
                 state: {
                     playerName: formData.nickname.trim(),
                     category: formData.category,
-                    wordData: gameData.wordData
-                },
+                    wordData: gameData
+                }
             });
 
         } catch (err){

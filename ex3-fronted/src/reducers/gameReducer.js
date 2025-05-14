@@ -5,8 +5,6 @@
 
 export const GAME_ACTIONS = {
     INIT_GAME: 'INIT_GAME',
-    SET_LOADING: 'SET_LOADING',
-    SET_WORD_DATA: 'SET_WORD_DATA',
     SET_ERROR: 'SET_ERROR',
     GUESS_LETTER: 'GUESS_LETTER',
     GUESS_WORD: 'GUESS_WORD',
@@ -32,12 +30,10 @@ export const initialGameState = {
     guessedLetters: [],
     attempts: 0,
     gameTime: 0,
-    gameStarted: false,
     gameStatus: GAME_STATUS.IDLE,
     hint: '',
     showHint: false,
     score: 0,
-    loading: false,
     error: null,
     category: '',
     playerName: ''
@@ -52,55 +48,28 @@ export const initialGameState = {
 export const gameReducer = (state, action) => {
     switch (action.type) {
         case GAME_ACTIONS.INIT_GAME:
-            const { word, hint } = action.payload;
-
+            const { word, hint } = action.payload.wordData;
+            const upperWord = word.toUpperCase();
+            
             return {
                 ...state,
                 playerName: action.payload.playerName,
                 category: action.payload.category,
-                word: word.toUpperCase(),
-                displayWord: word.toUpperCase().split('').map(() => '_'),
-                hint,
+                word: upperWord,
+                displayWord: upperWord.split('').map(() => '_'),
+                hint: hint,
                 guessedLetters: [],
                 attempts: 0,
                 gameTime: 0,
-                gameStarted: true,
                 gameStatus: GAME_STATUS.PLAYING,
                 showHint: false,
                 score: 0,
-                loading: false,
                 error: null
             };
-
-        case GAME_ACTIONS.SET_LOADING:
-            return {
-                ...state,
-                loading: action.payload,
-                gameStatus: action.payload ? GAME_STATUS.LOADING : state.gameStatus
-            };
-
-        /*case GAME_ACTIONS.SET_WORD_DATA:
-            const { word, hint } = action.payload;
-            return {
-                ...state,
-                word: word.toUpperCase(),
-                displayWord: word.toUpperCase().split('').map(() => '_'),
-                hint,
-                guessedLetters: [],
-                attempts: 0,
-                gameTime: 0,
-                gameStarted: true,
-                gameStatus: GAME_STATUS.PLAYING,
-                showHint: false,
-                score: 0,
-                loading: false,
-                error: null
-            };*/
 
         case GAME_ACTIONS.SET_ERROR:
             return {
                 ...state,
-                loading: false,
                 error: action.payload,
                 gameStatus: GAME_STATUS.IDLE
             };
@@ -129,7 +98,6 @@ export const gameReducer = (state, action) => {
                 attempts: state.attempts + 1,
                 displayWord: newDisplayWord,
                 gameStatus: isGameWon ? GAME_STATUS.WON : GAME_STATUS.PLAYING,
-                gameStarted: !isGameWon,
                 error: null
             };
         }
@@ -142,7 +110,6 @@ export const gameReducer = (state, action) => {
                 ...state,
                 attempts: state.attempts + 1,
                 gameStatus: isCorrect ? GAME_STATUS.WON : GAME_STATUS.PLAYING,
-                gameStarted: !isCorrect,
                 displayWord: isCorrect ? state.word.split('') : state.displayWord,
                 error: isCorrect ? null : 'Incorrect guess!'
             };
