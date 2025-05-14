@@ -40,7 +40,7 @@ function WordLetterGuess({ onGuessWord, onGuessLetter, disabled }) {
                         style={{ maxWidth: '300px' }}
                         value={guess}
                         onChange={(e) => setGuess(e.target.value)}
-                        placeholder="insert word"
+                        placeholder="insert word or letter"
                         disabled={disabled}
                         autoComplete="off"
                     />
