@@ -21,7 +21,6 @@ export const GAME_STATUS = {
     LOADING: 'loading',
     PLAYING: 'playing',
     WON: 'won',
-    LOST: 'lost'
 };
 
 export const initialGameState = {
@@ -82,9 +81,21 @@ export const gameReducer = (state, action) => {
                 return state;
             }
 
-            if (state.guessedLetters.includes(upperLetter)) {
-                return {...state, error: `You already guessed the letter '${upperLetter}'`}
+            if(!state.word.includes(upperLetter)) {
+                return {
+                    ...state,
+                    guessedLetters: [...state.guessedLetters, upperLetter],
+                    attempts: state.attempts + 1,
+                    error: `Wrong guess! the letter '${upperLetter}' is not in the word.`}
             }
+
+            if (state.guessedLetters.includes(upperLetter)) {
+                return {
+                    ...state,
+                    attempts: state.attempts + 1,
+                    error: `You already guessed the letter '${upperLetter}'`}
+            }
+
 
             const newGuessedLetters = [...state.guessedLetters, upperLetter];
             const newDisplayWord = state.word.split('').map((char, index) => {
@@ -99,7 +110,7 @@ export const gameReducer = (state, action) => {
             return {
                 ...state,
                 guessedLetters: newGuessedLetters,
-                attempts: state.attempts + 1,
+                attempts: state.attempts,
                 displayWord: newDisplayWord,
                 gameStatus: isGameWon ? GAME_STATUS.WON : GAME_STATUS.PLAYING,
                 error: null

@@ -40,5 +40,5 @@ export function useScoreCalculation(gameStatus, state, dispatch, navigate) {
 
       calculateAndSaveScore();
     }
-  }, [gameStatus, state, dispatch, navigate]);
+  }, [gameStatus]);
 } 

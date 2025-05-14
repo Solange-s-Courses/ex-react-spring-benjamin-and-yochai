@@ -127,7 +127,7 @@ function Game() {
     }
 
     // Game complete screen
-    if (state.gameStatus === GAME_STATUS.WON || state.gameStatus === GAME_STATUS.LOST) {
+    if (state.gameStatus === GAME_STATUS.WON) {
         return (
             <GameResult
                 gameState={state}
