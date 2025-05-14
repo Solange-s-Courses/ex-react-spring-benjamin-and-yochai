@@ -4,11 +4,12 @@ import React, { useState } from 'react';
  * Component for guessing the full word
  * @component
  * @param {Object} props - Component props
- * @param {Function} props.onGuess - Function to handle word guess
+ * @param {Function} props.onGuessWord - Function to handle word guess
+ * @param {Function} props.onGuessLetter - Function to handle letter guess
  * @param {boolean} props.disabled - Whether input should be disabled
  * @returns {JSX.Element} The word guess component
  */
-function WordGuess({ onGuess, disabled }) {
+function WordLetterGuess({ onGuessWord, onGuessLetter, disabled }) {
     const [guess, setGuess] = useState('');
 
     /**
@@ -18,7 +19,12 @@ function WordGuess({ onGuess, disabled }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (guess.trim()) {
-            onGuess(guess.trim());
+            if(guess.trim().length === 1){
+                onGuessLetter(guess.trim());
+            }
+            else{
+                onGuessWord(guess.trim());
+            }
             setGuess('');
         }
     };
@@ -51,4 +57,4 @@ function WordGuess({ onGuess, disabled }) {
     );
 }
 
-export default WordGuess;
+export default WordLetterGuess;

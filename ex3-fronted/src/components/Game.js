@@ -5,7 +5,7 @@ import WordDisplay from './WordDisplay';
 import HintSection from './HintSection';
 import GameStats from './GameStats';
 //import LetterButtons from './LetterButtons';
-import WordGuess from './WordGuess';
+import WordLetterGuess from './WordLetterGuess';
 import GameResult from './GameResult';
 import Layout from "./Layout";
 import { mockAPI } from "../gameData";
@@ -182,8 +182,9 @@ function Game() {
                             />*/}
 
             {/* Word guessing */}
-            <WordGuess
-                onGuess={handleWordGuess}
+            <WordLetterGuess
+                onGuessWord={handleWordGuess}
+                onGuessLetter={handleLetterGuess}
                 disabled={state.gameStatus !== GAME_STATUS.PLAYING}
             />
         </Layout>

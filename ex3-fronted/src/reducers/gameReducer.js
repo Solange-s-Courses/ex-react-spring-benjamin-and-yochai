@@ -78,8 +78,12 @@ export const gameReducer = (state, action) => {
             const { letter } = action.payload;
             const upperLetter = letter.toUpperCase();
 
-            if (state.guessedLetters.includes(upperLetter) || state.gameStatus !== GAME_STATUS.PLAYING) {
+            if (state.gameStatus !== GAME_STATUS.PLAYING) {
                 return state;
+            }
+
+            if (state.guessedLetters.includes(upperLetter)) {
+                return {...state, error: `You already guessed the letter '${upperLetter}'`}
             }
 
             const newGuessedLetters = [...state.guessedLetters, upperLetter];
