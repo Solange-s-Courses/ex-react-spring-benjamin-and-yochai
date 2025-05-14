@@ -52,10 +52,24 @@ export const initialGameState = {
 export const gameReducer = (state, action) => {
     switch (action.type) {
         case GAME_ACTIONS.INIT_GAME:
+            const { word, hint } = action.payload;
+
             return {
                 ...state,
                 playerName: action.payload.playerName,
-                category: action.payload.category
+                category: action.payload.category,
+                word: word.toUpperCase(),
+                displayWord: word.toUpperCase().split('').map(() => '_'),
+                hint,
+                guessedLetters: [],
+                attempts: 0,
+                gameTime: 0,
+                gameStarted: true,
+                gameStatus: GAME_STATUS.PLAYING,
+                showHint: false,
+                score: 0,
+                loading: false,
+                error: null
             };
 
         case GAME_ACTIONS.SET_LOADING:
@@ -65,7 +79,7 @@ export const gameReducer = (state, action) => {
                 gameStatus: action.payload ? GAME_STATUS.LOADING : state.gameStatus
             };
 
-        case GAME_ACTIONS.SET_WORD_DATA:
+        /*case GAME_ACTIONS.SET_WORD_DATA:
             const { word, hint } = action.payload;
             return {
                 ...state,
@@ -81,7 +95,7 @@ export const gameReducer = (state, action) => {
                 score: 0,
                 loading: false,
                 error: null
-            };
+            };*/
 
         case GAME_ACTIONS.SET_ERROR:
             return {

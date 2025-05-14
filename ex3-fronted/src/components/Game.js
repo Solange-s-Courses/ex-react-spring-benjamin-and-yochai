@@ -1,7 +1,6 @@
 import React, { useReducer, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import gameReducer, { initialGameState, GAME_ACTIONS, GAME_STATUS } from '../reducers/gameReducer';
-import { mockAPI } from "../gameData";
 import WordDisplay from './WordDisplay';
 import HintSection from './HintSection';
 import GameStats from './GameStats';
@@ -9,6 +8,8 @@ import GameStats from './GameStats';
 import WordGuess from './WordGuess';
 import GameResult from './GameResult';
 import Layout from "./Layout";
+import { mockAPI } from "../gameData";
+
 
 /**
  * Main Game component that manages the word guessing game with pure reducer
@@ -23,7 +24,7 @@ function Game() {
 
     // Initialize game with player data
     useEffect(() => {
-        if (!location.state || !location.state.playerName || !location.state.category) {
+        if (!location.state || !location.state.playerName || !location.state.category || !location.state.wordData) {
             navigate('/');
             return;
         }
@@ -32,11 +33,14 @@ function Game() {
             type: GAME_ACTIONS.INIT_GAME,
             payload: {
                 playerName: location.state.playerName,
-                category: location.state.category
+                category: location.state.category,
+                word: location.state.wordData.word,
+                hint: location.state.wordData.hint
             }
         });
 
-        startNewGame(location.state.category);
+
+        //startNewGame(location.state.category);
     }, [location.state, navigate]);
 
     // Timer effect
@@ -74,7 +78,7 @@ function Game() {
      * Start a new game by fetching a random word
      * @param {string} category - The category to fetch word from
      */
-    const startNewGame = async (category) => {
+    /*const startNewGame = async (category) => {
         dispatch({ type: GAME_ACTIONS.SET_LOADING, payload: true });
 
         try {
@@ -90,7 +94,7 @@ function Game() {
             });
             setTimeout(() => navigate('/'), 3000);
         }
-    };
+    };*/
 
     /**
      * Calculate score and save to local storage
@@ -170,7 +174,7 @@ function Game() {
      * Handle starting a new game
      */
     const handleNewGame = () => {
-        startNewGame(state.category);
+        navigate('/');
     };
 
     /**

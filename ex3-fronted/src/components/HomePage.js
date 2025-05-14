@@ -5,6 +5,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import * as gameData from "../gameData";
 import StartForm from "./StartForm";
 import Layout from "./Layout";
+import { mockAPI } from "../gameData";
 
 function HomePage() {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ function HomePage() {
                 }
                 const data = await response.json();
                 setCategories(data);
-                if (data.length === 0) {
+                if (!data || data.length === 0) {
                     throw new Error('something went wrong, please try again later.');
                     //setFormData({...formData, category: data[0].name})
 
@@ -73,17 +74,63 @@ function HomePage() {
         }
         setErrors(newErrors);
 
-        return Object.keys(newErrors).length <= 0;
+        return Object.keys(newErrors).length === 0;
     }
 
+    // Check if nickname already exists
+    const startNewGame = async (nickname, category) => {
+        const response = await fetch('/api/game/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname: nickname.trim(), category })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const error = new Error(data.message || 'Cannot start game');
+            error.status = response.status;
+            throw error;
+        }
+
+        return data;
+    };
+
+
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
 
         if (!validateForm()) {
             return;
         }
 
+        setIsLoading(true);
+        setErrors({});
+
+        try{
+            //const gameData  = await startNewGame(formData.nickname, formData.category);
+            const gameData = await mockAPI.getRandomWord(formData.category);
+
+
+            navigate('/game', {
+                state: {
+                    playerName: formData.nickname.trim(),
+                    category: formData.category,
+                    wordData: gameData.wordData
+                },
+            });
+
+        } catch (err){
+            if(err.status === 404 || err.status === 409) {
+                setErrors(err.message);
+            }
+            else{
+                setFetchError(err.message);
+            }
+        } finally {
+            setIsLoading(false);
+        }
         // send nick and cat to server
         // 200 - set local stor. and navigate to /game
         // 403 - nickname already taken. stErrors({...errors, [nickname]: "name already taken"})
@@ -99,12 +146,12 @@ function HomePage() {
         console.log('Starting game with config:', gameConfig);
         // In a real app, you'd redirect or change state to show the game component
 
-        navigate('/game', {
+        /*navigate('/game', {
             state: {
                 playerName: gameConfig.nickname,
                 category: gameConfig.category
             },
-        });
+        });*/
     };
 
     const handleChange = (e) => {
