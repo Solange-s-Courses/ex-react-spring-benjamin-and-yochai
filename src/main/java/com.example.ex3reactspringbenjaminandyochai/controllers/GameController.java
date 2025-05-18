@@ -34,7 +34,7 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<WordEntry> addGame(@RequestBody FormData formData){
             try{
-                boolean isUnique = scoreService.isNicknameUnique(formData.getUsername());
+                boolean isUnique = scoreService.isNicknameUnique(formData.getNickname());
 
                 if(!isUnique){
                     return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
@@ -54,8 +54,8 @@ public class GameController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<HttpStatus> deleteGame(@RequestParam String username){
-        if (scoreService.deleteGame(username)){
+    public ResponseEntity<HttpStatus> deleteGame(@RequestParam String nickname){
+        if (scoreService.deleteGame(nickname)){
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

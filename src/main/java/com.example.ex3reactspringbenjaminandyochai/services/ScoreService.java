@@ -26,7 +26,7 @@ public class ScoreService {
     public synchronized void registerNickname(FormData formData) {
         loadFromFile();
         //check if unique
-        scores.add(new ScoreEntry(formData.getUsername(), 0, formData.getCategory()));
+        scores.add(new ScoreEntry(formData.getNickname(), 0, formData.getCategory()));
         saveToFile();
     }
 
@@ -48,7 +48,8 @@ public class ScoreService {
                 scores = (List<ScoreEntry>) obj;
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            scores = new ArrayList<>();
+            System.out.println("Error loading scores from file");
         }
     }
 
@@ -56,7 +57,7 @@ public class ScoreService {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(scores);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error saving scores to file");
         }
     }
 }

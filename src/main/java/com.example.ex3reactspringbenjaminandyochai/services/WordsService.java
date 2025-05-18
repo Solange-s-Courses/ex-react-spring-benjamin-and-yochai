@@ -58,7 +58,8 @@ public class WordsService {
                 words = (List<WordEntry>) obj;
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Error loading words from file");
+            words = new ArrayList<>();
         }
     }
 
@@ -66,7 +67,7 @@ public class WordsService {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(words);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error saving words to file");
         }
     }
 }
