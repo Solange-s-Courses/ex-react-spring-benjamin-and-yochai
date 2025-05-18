@@ -83,8 +83,22 @@ function Game() {
     /**
      * Handle leaving the game
      */
-    const handleLeaveGame = () => {
-        navigate('/');
+    const handleLeaveGame = async () => {
+        try {
+            const response = await fetch(`/game/delete?nickname=${state.playerName}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete game');
+            }
+        } catch (error) {
+            dispatch({ //לעבור על זה, בפועל לא באמת נראה את השגיאה.
+                type: GAME_ACTIONS.SET_ERROR,
+                payload: 'Failed to leave game properly. Redirecting to home...'
+            });
+        } finally {
+            navigate('/');
+        }
     };
 
     /**

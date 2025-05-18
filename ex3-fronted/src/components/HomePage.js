@@ -14,13 +14,10 @@ function HomePage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const validateForm = () => {
-        const isUnique = true;
         const newErrors = {};
 
         if (formData.nickname.trim().length === 0) {
             newErrors.nickname = 'Please enter a nickname';
-        } else if (!isUnique) {
-            newErrors.nickname = 'This nickname is already taken';
         }
 
         if (!formData.category) {
@@ -39,13 +36,13 @@ function HomePage() {
             body: JSON.stringify({ nickname: nickname.trim(), category })
         });
 
-        const data = await response.json();
-
         if (!response.ok) {
-            const error = new Error(data.message || 'Cannot start game');
+            // need to add messages in backend-----------------------------------------------------
+            const error = new Error(/*data.message ||*/ 'Cannot start game');
             error.status = response.status;
             throw error;
         }
+        const data = await response.json();
 
         return data;
     };
@@ -75,7 +72,7 @@ function HomePage() {
 
         } catch (err) {
             if(err.status === 404 || err.status === 409) {
-                setErrors(err.message);
+                setErrors({...errors, nickname: err.message});
             } else {
                 setFetchError(err.message);
             }
