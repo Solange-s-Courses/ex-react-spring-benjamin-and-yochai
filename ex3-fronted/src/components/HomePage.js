@@ -23,8 +23,8 @@ function HomePage() {
             setFetchError(null);
             try {
                 // Replace with your actual API endpoint
-                //const response = await fetch('https://your-api-endpoint.com/categories');
-                const response = {
+                const response = await fetch('/game/categories');
+                /*const response = {
                     ok: false,
                     status: 404,
                     statusText: 'Not Found',
@@ -33,7 +33,7 @@ function HomePage() {
                     headers: new Headers({
                         'Content-Type': 'application/json'
                     })
-                };
+                };*/
 
                 if (!response.ok) {
                     throw new Error('cannot start a game at the moment, please try again');
@@ -47,9 +47,8 @@ function HomePage() {
                     //setSelectedCategory(data[0].id); // Set first category as default
                 }
             } catch (err) {
-                //setFetchError(err.message);
-                // For development - use mock data if API fails
-                setCategories(gameData.WORD_CATEGORIES);
+                setFetchError(err.message);
+                //setCategories(gameData.WORD_CATEGORIES);
                 //setFormData({...formData, [`category`]:'animals'});
             } finally {
                 setIsLoading(false);
@@ -79,7 +78,7 @@ function HomePage() {
 
     // Check if nickname already exists
     const startNewGame = async (nickname, category) => {
-        const response = await fetch('/api/game/start', {
+        const response = await fetch('/game/start', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nickname: nickname.trim(), category })
@@ -109,8 +108,8 @@ function HomePage() {
         setErrors({});
 
         try{
-            //const gameData  = await startNewGame(formData.nickname, formData.category);
-            const gameData = await mockAPI.getRandomWord(formData.category);
+            const gameData  = await startNewGame(formData.nickname, formData.category);
+            //const gameData = await mockAPI.getRandomWord(formData.category);
             console.log("gameData returned from API:", gameData);
 
             navigate('/game', {
@@ -131,27 +130,6 @@ function HomePage() {
         } finally {
             setIsLoading(false);
         }
-        // send nick and cat to server
-        // 200 - set local stor. and navigate to /game
-        // 403 - nickname already taken. stErrors({...errors, [nickname]: "name already taken"})
-        // * - setFetchError(e.message);
-
-        // If all validations pass, start the game
-        const gameConfig = {
-            nickname: formData.nickname.trim().toLowerCase(),
-            category: formData.category,
-        };
-
-        // Here you would navigate to the game page or start the gam
-        console.log('Starting game with config:', gameConfig);
-        // In a real app, you'd redirect or change state to show the game component
-
-        /*navigate('/game', {
-            state: {
-                playerName: gameConfig.nickname,
-                category: gameConfig.category
-            },
-        });*/
     };
 
     const handleChange = (e) => {
