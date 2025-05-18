@@ -1,62 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import {useNavigate} from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import * as gameData from "../gameData";
 import StartForm from "./StartForm";
 import Layout from "./Layout";
-import { mockAPI } from "../gameData";
+import { useFetch } from "../hooks/useFetch";
 
 function HomePage() {
     const navigate = useNavigate();
-    const [categories, setCategories] = useState([]);
+    const { data: categories, isLoading, fetchError, setFetchError } = useFetch('/game/categories');
     const [formData, setFormData] = useState({nickname: "", category: ""});
-    const [isLoading, setIsLoading] = useState(true);
-    const [fetchError, setFetchError] = useState(null);
     const [errors, setErrors] = useState({});
-
-    // Fetch categories from the REST API
-    useEffect(() => {
-        console.log("homepage 16 need to fetch categories");
-        const fetchCategories = async () => {
-            setIsLoading(true);
-            setFetchError(null);
-            try {
-                // Replace with your actual API endpoint
-                const response = await fetch('/game/categories');
-                /*const response = {
-                    ok: false,
-                    status: 404,
-                    statusText: 'Not Found',
-                    json: () => Promise.reject(new Error('Not Found')),
-                    text: () => Promise.resolve('Resource not found'),
-                    headers: new Headers({
-                        'Content-Type': 'application/json'
-                    })
-                };*/
-
-                if (!response.ok) {
-                    throw new Error('cannot start a game at the moment, please try again');
-                }
-                const data = await response.json();
-                setCategories(data);
-                if (!data || data.length === 0) {
-                    throw new Error('something went wrong, please try again later.');
-                    //setFormData({...formData, category: data[0].name})
-
-                    //setSelectedCategory(data[0].id); // Set first category as default
-                }
-            } catch (err) {
-                setFetchError(err.message);
-                //setCategories(gameData.WORD_CATEGORIES);
-                //setFormData({...formData, [`category`]:'animals'});
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchCategories();
-    }, []);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const validateForm = () => {
         const isUnique = true;
@@ -64,7 +19,7 @@ function HomePage() {
 
         if (formData.nickname.trim().length === 0) {
             newErrors.nickname = 'Please enter a nickname';
-        } else if (!isUnique) {// need to move to submition
+        } else if (!isUnique) {
             newErrors.nickname = 'This nickname is already taken';
         }
 
@@ -95,7 +50,6 @@ function HomePage() {
         return data;
     };
 
-
     // Handle form submission
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -104,12 +58,11 @@ function HomePage() {
             return;
         }
 
-        setIsLoading(true);
+        setIsSubmitting(true);
         setErrors({});
 
-        try{
-            const gameData  = await startNewGame(formData.nickname, formData.category);
-            //const gameData = await mockAPI.getRandomWord(formData.category);
+        try {
+            const gameData = await startNewGame(formData.nickname, formData.category);
             console.log("gameData returned from API:", gameData);
 
             navigate('/game', {
@@ -120,22 +73,20 @@ function HomePage() {
                 }
             });
 
-        } catch (err){
+        } catch (err) {
             if(err.status === 404 || err.status === 409) {
                 setErrors(err.message);
-            }
-            else{
+            } else {
                 setFetchError(err.message);
             }
         } finally {
-            setIsLoading(false);
+            setIsSubmitting(false);
         }
     };
 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value});
         setErrors({});
-
     }
 
     return (
@@ -163,7 +114,7 @@ function HomePage() {
                     errors={errors}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    disabled={!!fetchError}
+                    disabled={!!fetchError || isSubmitting}
                     categories={categories}
                     formData={formData}
                 />
