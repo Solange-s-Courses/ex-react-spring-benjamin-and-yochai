@@ -1,4 +1,4 @@
-package com.example.ex3reactspringbenjaminandyochai.rest_API;
+package com.example.ex3reactspringbenjaminandyochai.controllers;
 
 import com.example.ex3reactspringbenjaminandyochai.dao.FormData;
 import org.springframework.http.HttpStatus;
