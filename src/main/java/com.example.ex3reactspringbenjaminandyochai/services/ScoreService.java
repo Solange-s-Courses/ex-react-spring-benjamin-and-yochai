@@ -1,12 +1,15 @@
 package com.example.ex3reactspringbenjaminandyochai.services;
 
+import com.example.ex3reactspringbenjaminandyochai.dao.FormData;
 import com.example.ex3reactspringbenjaminandyochai.model.ScoreEntry;
 import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ScoreService {
     private final String FILE_PATH = "scores.ser";
     private List<ScoreEntry> scores = new ArrayList<>();
@@ -20,9 +23,20 @@ public class ScoreService {
         return scores.stream().noneMatch(entry -> entry.getNickname().equalsIgnoreCase(nickname));
     }
 
-    public synchronized void registerNickname(String nickname, String category) {
-        scores.add(new ScoreEntry(nickname, 0, category));
+    public synchronized void registerNickname(FormData formData) {
+        loadFromFile();
+        //check if unique
+        scores.add(new ScoreEntry(formData.getUsername(), 0, formData.getCategory()));
         saveToFile();
+    }
+
+
+    public boolean deleteGame(String nickname) {
+        loadFromFile();
+        boolean removed = scores.removeIf(entry -> entry.getNickname().equalsIgnoreCase(nickname));
+        saveToFile();
+
+        return removed;
     }
 
     private void loadFromFile() {
