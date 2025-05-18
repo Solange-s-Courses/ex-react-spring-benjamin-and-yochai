@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class WordsService {
@@ -20,22 +21,33 @@ public class WordsService {
         loadWordsFromFile();
     }
 
-    public synchronized WordEntry getRandomWord() {
+    public synchronized WordEntry getRandomWord(String category) {
         loadWordsFromFile();
 
-        if (words.isEmpty()) {
-            //return new WordEntry("none", "no word", "no hint");
+        List<WordEntry> filtered = words.stream()
+                .filter(w -> w.getCategory().equalsIgnoreCase(category)).toList();
+
+        if (filtered.isEmpty()) {
             return null;
-            //throw error
         }
-        return words.get(random.nextInt(words.size()));
+
+        return filtered.get(random.nextInt(filtered.size()));
     }
 
     public synchronized void addWord(WordEntry word) {
+        //validation
         loadWordsFromFile();
         words.add(word);
         saveWordsToFile();
     }
+
+    public synchronized List<String> getAllCategories() {
+        loadWordsFromFile();
+
+        return words.stream().map(WordEntry::getCategory).distinct().toList();
+    }
+
+    public synchronized void deleteWord(WordEntry word) {}
 
     private void loadWordsFromFile() {
         File file = new File(FILE_PATH);

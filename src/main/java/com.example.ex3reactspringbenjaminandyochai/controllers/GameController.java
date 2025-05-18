@@ -1,6 +1,10 @@
 package com.example.ex3reactspringbenjaminandyochai.controllers;
 
 import com.example.ex3reactspringbenjaminandyochai.dao.FormData;
+import com.example.ex3reactspringbenjaminandyochai.model.WordEntry;
+import com.example.ex3reactspringbenjaminandyochai.services.ScoreService;
+import com.example.ex3reactspringbenjaminandyochai.services.WordsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,33 +17,48 @@ import java.util.List;
 @RestController
 @RequestMapping("/game")
 public class GameController {
-    @GetMapping("")
-    public String game() {
-        return "Hello World";
+    private final ScoreService scoreService;
+    private final WordsService wordsService;
+
+    @Autowired
+    public GameController(ScoreService scoreService, WordsService wordsService) {
+        this.scoreService = scoreService;
+        this.wordsService = wordsService;
     }
 
     @GetMapping("/categories")
     public List<String> getCategories(){
-        //return Words.getAllCategories();
-        return Arrays.asList("", "", "");
+        return wordsService.getAllCategories();
     }
 
     @PostMapping("/start")
-    public ResponseEntity<HttpStatus> addGame(@RequestBody FormData formData){
-        //synchronized (/*leader score*/){
-            // try{
-            //      leaderBoard.addAttempt(formData);
-            //      GameData newGame = Words.getGame(formData.category);
-            //      return new ResponseEntity.ok(HttpStatus.OK);
-            // }catch(e){
-            //      handle errors}
-        //}
-        return ResponseEntity.ok(HttpStatus.CREATED);
+    public ResponseEntity<WordEntry> addGame(@RequestBody FormData formData){
+            try{
+                boolean isUnique = scoreService.isNicknameUnique(formData.getUsername());
+
+                if(!isUnique){
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+                }
+
+                WordEntry word = wordsService.getRandomWord(formData.getCategory());
+                if (word == null){
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
+                scoreService.registerNickname(formData);
+
+                return ResponseEntity.ok(word);
+            }
+            catch ( Exception e ){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
     }
 
-    @DeleteMapping("delete")
-    public ResponseEntity<String> deleteGame(@RequestParam String username){
-        return ResponseEntity.ok(username + " has been deleted");
+    @DeleteMapping("/delete")
+    public ResponseEntity<HttpStatus> deleteGame(@RequestParam String username){
+        if (scoreService.deleteGame(username)){
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
