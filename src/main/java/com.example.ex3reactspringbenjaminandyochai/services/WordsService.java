@@ -8,13 +8,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 @Service
 public class WordsService {
     private final String FILE_PATH = "words.ser";
     private List<WordEntry> words = new ArrayList<>();
     private final Random random = new Random();
+    private static final Pattern ALPHA_PATTERN = Pattern.compile("^[a-zA-Z]+$");
 
     @PostConstruct
     public void init() {
@@ -34,20 +35,104 @@ public class WordsService {
         return filtered.get(random.nextInt(filtered.size()));
     }
 
-    public synchronized void addWord(WordEntry word) throws IOException{
-        //validation
+    public synchronized void addWord(WordEntry word) throws IllegalArgumentException {
+        validateWordEntry(word);
+
+        // Check for duplicate
+        if (wordExists(word.getWord())) {
+            throw new IllegalArgumentException("Word already exists");
+        }
+
         loadWordsFromFile();
         words.add(word);
         saveWordsToFile();
     }
 
-    public synchronized List<String> getAllCategories() {
+    public synchronized boolean updateWord(String originalWord, WordEntry newWord) throws IllegalArgumentException {
+        validateWordEntry(newWord);
+
+        // Check for duplicate only if the word has changed
+        if (!originalWord.equalsIgnoreCase(newWord.getWord()) && wordExists(newWord.getWord())) {
+            throw new IllegalArgumentException("New word already exists");
+        }
+
         loadWordsFromFile();
 
+        // Find the index of the word to update
+        int indexToUpdate = -1;
+        for (int i = 0; i < words.size(); i++) {
+            if (words.get(i).getWord().equalsIgnoreCase(originalWord)) {
+                indexToUpdate = i;
+                break;
+            }
+        }
+
+        if (indexToUpdate != -1) {
+            words.set(indexToUpdate, newWord);
+            saveWordsToFile();
+            return true;
+        }
+
+        return false;
+    }
+
+    public synchronized boolean deleteWord(String word) {
+        if (word == null || word.trim().isEmpty()) {
+            throw new IllegalArgumentException("Word cannot be empty");
+        }
+
+        loadWordsFromFile();
+        boolean removed = words.removeIf(w -> w.getWord().equalsIgnoreCase(word));
+        if (removed) {
+            saveWordsToFile();
+        }
+        return removed;
+    }
+
+    public synchronized List<String> getAllCategories() {
+        loadWordsFromFile();
         return words.stream().map(WordEntry::getCategory).distinct().toList();
     }
 
-    public synchronized void deleteWord(WordEntry word) {}
+    public synchronized List<WordEntry> getAllWords() {
+        loadWordsFromFile();
+        return new ArrayList<>(words);
+    }
+
+    public synchronized boolean wordExists(String word) {
+        if (word == null) return false;
+
+        loadWordsFromFile();
+        return words.stream().anyMatch(w -> w.getWord().equalsIgnoreCase(word));
+    }
+
+    // Centralized validation method
+    private void validateWordEntry(WordEntry wordEntry) {
+        if (wordEntry == null) {
+            throw new IllegalArgumentException("Word entry cannot be null");
+        }
+
+        String word = wordEntry.getWord();
+        String hint = wordEntry.getHint();
+        String category = wordEntry.getCategory();
+
+        if (word == null || hint == null || category == null) {
+            throw new IllegalArgumentException("Word, hint, and category cannot be null");
+        }
+
+        if (word.trim().isEmpty() || hint.trim().isEmpty() || category.trim().isEmpty()) {
+            throw new IllegalArgumentException("Word, hint, and category cannot be empty");
+        }
+
+        // Validate word and category contain only letters
+        if (!ALPHA_PATTERN.matcher(word).matches()) {
+            throw new IllegalArgumentException("Word can only contain letters a-z");
+        }
+
+        if (!ALPHA_PATTERN.matcher(category).matches()) {
+            throw new IllegalArgumentException("Category can only contain letters a-z");
+        }
+    }
 
     private void loadWordsFromFile() {
         File file = new File(FILE_PATH);
@@ -72,3 +157,4 @@ public class WordsService {
         }
     }
 }
+
