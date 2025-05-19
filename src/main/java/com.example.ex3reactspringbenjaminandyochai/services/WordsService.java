@@ -35,7 +35,7 @@ public class WordsService {
         return filtered.get(random.nextInt(filtered.size()));
     }
 
-    public synchronized void addWord(WordEntry word) throws IllegalArgumentException {
+    public synchronized void addWord(WordEntry word) throws IllegalArgumentException, IOException {
         validateWordEntry(word);
 
         // Check for duplicate
@@ -48,7 +48,7 @@ public class WordsService {
         saveWordsToFile();
     }
 
-    public synchronized boolean updateWord(String originalWord, WordEntry newWord) throws IllegalArgumentException {
+    public synchronized boolean updateWord(String originalWord, WordEntry newWord) throws IllegalArgumentException, IOException {
         validateWordEntry(newWord);
 
         // Check for duplicate only if the word has changed
@@ -76,7 +76,7 @@ public class WordsService {
         return false;
     }
 
-    public synchronized boolean deleteWord(String word) {
+    public synchronized boolean deleteWord(String word) throws IOException{
         if (word == null || word.trim().isEmpty()) {
             throw new IllegalArgumentException("Word cannot be empty");
         }
