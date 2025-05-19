@@ -16,7 +16,6 @@ function StartForm({errors, handleChange, handleSubmit, disabled, categories, fo
                     placeholder="Enter your nickname"
                     disabled={disabled}
                     required
-                    pattern="[A-Za-z]+"
                 />
                 <div className="invalid-feedback">{errors.nickname}</div>
             </div>
@@ -44,12 +43,13 @@ function StartForm({errors, handleChange, handleSubmit, disabled, categories, fo
 
             <div className="d-grid">
                 <button
-                    className="btn btn-success btn-lg"
+                    className={'btn btn-success btn-lg'}
                     type="submit"
                     disabled={disabled}
                 >
                     Start Game!
                 </button>
+                <div className="text-danger">{errors.general}</div>
             </div>
         </form>
     )

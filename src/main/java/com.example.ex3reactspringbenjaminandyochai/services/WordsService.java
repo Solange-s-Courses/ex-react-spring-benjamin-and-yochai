@@ -35,29 +35,29 @@ public class WordsService {
         return filtered.get(random.nextInt(filtered.size()));
     }
 
-    public synchronized void addWord(WordEntry word) throws IllegalArgumentException {
+    public synchronized void addWord(WordEntry word) throws IllegalArgumentException, IOException {
         validateWordEntry(word);
-        
+
         // Check for duplicate
         if (wordExists(word.getWord())) {
             throw new IllegalArgumentException("Word already exists");
         }
-        
+
         loadWordsFromFile();
         words.add(word);
         saveWordsToFile();
     }
 
-    public synchronized boolean updateWord(String originalWord, WordEntry newWord) throws IllegalArgumentException {
+    public synchronized boolean updateWord(String originalWord, WordEntry newWord) throws IllegalArgumentException, IOException {
         validateWordEntry(newWord);
-        
+
         // Check for duplicate only if the word has changed
         if (!originalWord.equalsIgnoreCase(newWord.getWord()) && wordExists(newWord.getWord())) {
             throw new IllegalArgumentException("New word already exists");
         }
-        
+
         loadWordsFromFile();
-        
+
         // Find the index of the word to update
         int indexToUpdate = -1;
         for (int i = 0; i < words.size(); i++) {
@@ -66,21 +66,21 @@ public class WordsService {
                 break;
             }
         }
-        
+
         if (indexToUpdate != -1) {
             words.set(indexToUpdate, newWord);
             saveWordsToFile();
             return true;
         }
-        
+
         return false;
     }
 
-    public synchronized boolean deleteWord(String word) {
+    public synchronized boolean deleteWord(String word) throws IOException{
         if (word == null || word.trim().isEmpty()) {
             throw new IllegalArgumentException("Word cannot be empty");
         }
-        
+
         loadWordsFromFile();
         boolean removed = words.removeIf(w -> w.getWord().equalsIgnoreCase(word));
         if (removed) {
@@ -101,7 +101,7 @@ public class WordsService {
 
     public synchronized boolean wordExists(String word) {
         if (word == null) return false;
-        
+
         loadWordsFromFile();
         return words.stream().anyMatch(w -> w.getWord().equalsIgnoreCase(word));
     }
@@ -111,24 +111,24 @@ public class WordsService {
         if (wordEntry == null) {
             throw new IllegalArgumentException("Word entry cannot be null");
         }
-        
+
         String word = wordEntry.getWord();
         String hint = wordEntry.getHint();
         String category = wordEntry.getCategory();
-        
+
         if (word == null || hint == null || category == null) {
             throw new IllegalArgumentException("Word, hint, and category cannot be null");
         }
-        
+
         if (word.trim().isEmpty() || hint.trim().isEmpty() || category.trim().isEmpty()) {
             throw new IllegalArgumentException("Word, hint, and category cannot be empty");
         }
-        
+
         // Validate word and category contain only letters
         if (!ALPHA_PATTERN.matcher(word).matches()) {
             throw new IllegalArgumentException("Word can only contain letters a-z");
         }
-        
+
         if (!ALPHA_PATTERN.matcher(category).matches()) {
             throw new IllegalArgumentException("Category can only contain letters a-z");
         }
@@ -136,7 +136,7 @@ public class WordsService {
 
     private void loadWordsFromFile() {
         File file = new File(FILE_PATH);
-        if (!file.exists()) return;
+
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Object obj = ois.readObject();
             if (obj instanceof List) {
@@ -148,11 +148,12 @@ public class WordsService {
         }
     }
 
-    private void saveWordsToFile() {
+    private void saveWordsToFile() throws IOException{
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(words);
         } catch (IOException e) {
             System.out.println("Error saving words to file");
+            throw e;
         }
     }
 }
