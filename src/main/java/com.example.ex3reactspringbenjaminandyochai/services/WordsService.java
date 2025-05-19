@@ -34,7 +34,7 @@ public class WordsService {
         return filtered.get(random.nextInt(filtered.size()));
     }
 
-    public synchronized void addWord(WordEntry word) {
+    public synchronized void addWord(WordEntry word) throws IOException{
         //validation
         loadWordsFromFile();
         words.add(word);
@@ -51,7 +51,7 @@ public class WordsService {
 
     private void loadWordsFromFile() {
         File file = new File(FILE_PATH);
-        if (!file.exists()) return;
+
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Object obj = ois.readObject();
             if (obj instanceof List) {
@@ -63,11 +63,12 @@ public class WordsService {
         }
     }
 
-    private void saveWordsToFile() {
+    private void saveWordsToFile() throws IOException{
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(words);
         } catch (IOException e) {
             System.out.println("Error saving words to file");
+            throw e;
         }
     }
 }

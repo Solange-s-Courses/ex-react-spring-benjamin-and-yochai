@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react';
 export function useFetch(url) {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [fetchError, setFetchError] = useState(null);
+    const [fatalError, setFatalError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            setFetchError(null);
+            setFatalError(null);
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -24,7 +24,7 @@ export function useFetch(url) {
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
-                setFetchError(error.message);
+                setFatalError(error.message);
                 setData([]);
             } finally {
                 setIsLoading(false);
@@ -34,5 +34,5 @@ export function useFetch(url) {
         fetchData();
     }, [url]);
 
-    return { data, isLoading, fetchError, setFetchError };
+    return { data, isLoading, fatalError: fatalError, setFatalError: setFatalError };
 } 

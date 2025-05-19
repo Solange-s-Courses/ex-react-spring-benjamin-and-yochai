@@ -5,10 +5,11 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import StartForm from "./StartForm";
 import Layout from "./Layout";
 import { useFetch } from "../hooks/useFetch";
+import axios from 'axios';
 
 function HomePage() {
     const navigate = useNavigate();
-    const { data: categories, isLoading, fetchError, setFetchError } = useFetch('/game/categories');
+    const { data: categories, isLoading, fatalError, setFatalError } = useFetch('/game/categories');
     const [formData, setFormData] = useState({nickname: "", category: ""});
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,6 +19,8 @@ function HomePage() {
 
         if (formData.nickname.trim().length === 0) {
             newErrors.nickname = 'Please enter a nickname';
+        }else if (!/^[A-Za-z0-9]+$/.test(formData.nickname.trim())){
+            newErrors.nickname = 'Nickname must contain only letters';
         }
 
         if (!formData.category) {
@@ -28,23 +31,31 @@ function HomePage() {
         return Object.keys(newErrors).length === 0;
     }
 
-    // Check if nickname already exists
+
     const startNewGame = async (nickname, category) => {
-        const response = await fetch('/game/start', {
+        //try{
+            const response = await axios.post('/game/start', {nickname, category});
+            return response.data;
+        //} catch (error) {
+
+        //}
+
+        /*const response = await fetch('/game/start', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nickname: nickname.trim(), category })
         });
 
+
         if (!response.ok) {
             // need to add messages in backend-----------------------------------------------------
-            const error = new Error(/*data.message ||*/ 'Cannot start game');
+            const error = new Error(/*data.message ||* / 'Cannot start game');
             error.status = response.status;
             throw error;
         }
         const data = await response.json();
 
-        return data;
+        return data;*/
     };
 
     // Handle form submission
@@ -59,7 +70,7 @@ function HomePage() {
         setErrors({});
 
         try {
-            const gameData = await startNewGame(formData.nickname, formData.category);
+            const gameData = await startNewGame(formData.nickname.trim(), formData.category);
             console.log("gameData returned from API:", gameData);
 
             navigate('/game', {
@@ -72,9 +83,9 @@ function HomePage() {
 
         } catch (err) {
             if(err.status === 404 || err.status === 409) {
-                setErrors({...errors, nickname: err.message});
+                setErrors({...errors, general: err.message});
             } else {
-                setFetchError(err.message);
+                setFatalError(err.message);
             }
         } finally {
             setIsSubmitting(false);
@@ -100,7 +111,7 @@ function HomePage() {
                 </ul>
             </div>
 
-            {fetchError && <div className='alert alert-danger'>{fetchError}</div>}
+            {fatalError && <div className='alert alert-danger'>{fatalError}</div>}
 
             {isLoading ?
                 <div className="d-flex justify-content-center">
@@ -111,7 +122,7 @@ function HomePage() {
                     errors={errors}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    disabled={!!fetchError || isSubmitting}
+                    disabled={!!fatalError || isSubmitting}
                     categories={categories}
                     formData={formData}
                 />
