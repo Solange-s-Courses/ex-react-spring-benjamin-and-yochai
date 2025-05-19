@@ -5,12 +5,14 @@ import Leaderboard from './components/Leaderboard';
 import WordManagement from './components/WordManagement';*/
 import About from './components/About';
 import Layout from './components/Layout';
+import WordManagement from './components/WordManagement';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import HomePage from "./components/HomePage";
 import Game from "./components/Game";
 import Leaderboard from "./components/Leaderboard";
 import ErrorPage from "./components/ErrorPage";
+
 
 /**
  * Main App component that sets up routing and navigation
@@ -26,7 +28,7 @@ function App() {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/game" element={<Game />} />
                         <Route path="/leaderboard" element={<Leaderboard />} />
-                        <Route path="/admin" element={<Layout title={"admin module"}> need to import WordManagement </Layout>} />
+                        <Route path="/admin" element={<WordManagement />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/*" element={<ErrorPage />} />
                     </Routes>
