@@ -19,7 +19,7 @@ export function useFetch(url) {
                 }
                 const result = await response.json();
                 setData(result);
-                if (!result || result.length === 0) {
+                if (!result /*|| result.length === 0*/) {
                     throw new Error('something went wrong, please try again later.');
                 }
             } catch (error) {

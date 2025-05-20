@@ -3,6 +3,9 @@ import Layout from './Layout';
 import WordForm from './WordForm';
 import WordCategoryList from './WordCategoryList';
 import { useFetch } from '../hooks/useFetch';
+import WordsByCategoryTable from "./WordsByCategoryTable";
+import WordFormModal from "./WordFormModal";
+
 
 function WordManagement() {
     const { data: categories, isLoading: categoriesLoading, fetchError: categoriesError } = useFetch('/game/categories');
@@ -101,7 +104,27 @@ function WordManagement() {
                 isSubmitting={isSubmitting}
                 existingWords={words || []}
             />
+            {/*
+            <WordFormModal
+                        categories={categories || []}
+                        onAddWord={handleAddWord}
+                        onUpdateWord={handleUpdateWord}
+                        editingWord={editingWord}
+                        setEditingWord={setEditingWord}
+                        isSubmitting={isSubmitting}
+                        existingWords={words || []}
+                    />
+*/}
 
+                    <WordsByCategoryTable
+                        categories={categories || []}
+                        words={words || []}
+                        onEdit={setEditingWord}
+                        onDelete={handleDeleteWord}
+                        isLoading={isLoading}
+                        isSubmitting={isSubmitting}
+                    />
+                    {/*
             <WordCategoryList
                 categories={categories || []}
                 words={words || []}
@@ -110,8 +133,9 @@ function WordManagement() {
                 isLoading={isLoading}
                 isSubmitting={isSubmitting}
             />
-        </Layout>
-    );
-}
+            */}
+                    </Layout>
+                );
+            }
 
-export default WordManagement;
+            export default WordManagement;

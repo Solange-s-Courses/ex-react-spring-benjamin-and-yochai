@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container, Card, Row, Col } from 'react-bootstrap';
 import { FaCheckCircle, FaClock, FaLightbulb, FaTimesCircle, FaTrophy, FaBook, FaTools } from 'react-icons/fa';
 import Layout from "./Layout";
 

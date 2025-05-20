@@ -2,14 +2,16 @@ import React from 'react';
 
 function WordRow({ word, onEdit, onDelete, isSubmitting }) {
     return (
-        <tr>
+        <tr key={word.word}>
             <td>{word.word}</td>
             <td>{word.hint}</td>
             <td>
                 <div className="btn-group btn-group-sm">
                     <button 
-                        className="btn btn-warning"
+                        className="btn btn-primary"
                         onClick={() => onEdit(word)}
+                        /*data-bs-toggle="modal"
+                        data-bs-target="#wordModal"*/
                         disabled={isSubmitting}
                     >
                         Edit
