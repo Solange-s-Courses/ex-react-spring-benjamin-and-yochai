@@ -32,7 +32,7 @@ export const initialGameState = {
     hint: '',
     showHint: false,
     score: 0,
-    error: null,
+    error: {},
     category: '',
     playerName: ''
 };
@@ -62,14 +62,14 @@ export const gameReducer = (state, action) => {
                 gameStatus: GAME_STATUS.PLAYING,
                 showHint: false,
                 score: 0,
-                error: null
+                error: {}
             };
 
         case GAME_ACTIONS.SET_ERROR:
             return {
                 ...state,
-                error: action.payload,
-                gameStatus: GAME_STATUS.IDLE
+                error: {...state.error, [action.payload.name]: action.payload.message},
+                //gameStatus: GAME_STATUS.IDLE
             };
 
         case GAME_ACTIONS.GUESS_LETTER: {
@@ -84,7 +84,8 @@ export const gameReducer = (state, action) => {
                 return {
                     ...state,
                     attempts: state.attempts + 1,
-                    error: `You already guessed the letter '${upperLetter}'`}
+                    error: {...state.error, guess: `You already guessed the letter '${upperLetter}'`}
+                }
             }
 
             if(!state.word.includes(upperLetter)) {
@@ -92,7 +93,8 @@ export const gameReducer = (state, action) => {
                     ...state,
                     guessedLetters: [...state.guessedLetters, upperLetter],
                     attempts: state.attempts + 1,
-                    error: `Wrong guess! the letter '${upperLetter}' is not in the word.`}
+                    error: {...state.error, guess: `Wrong guess! the letter '${upperLetter}' is not in the word.`}
+                }
             }
 
             const newGuessedLetters = [...state.guessedLetters, upperLetter];
@@ -111,12 +113,21 @@ export const gameReducer = (state, action) => {
                 attempts: state.attempts,
                 displayWord: newDisplayWord,
                 gameStatus: isGameWon ? GAME_STATUS.WON : GAME_STATUS.PLAYING,
-                error: null
+                error: {}
             };
         }
 
         case GAME_ACTIONS.GUESS_WORD: {
             const { guess } = action.payload;
+
+            if (guess.length !== state.word.length) {
+                return {
+                    ...state,
+                    attempts: state.attempts + 1,
+                    error: {...state.error, validation: 'the length of your guess should be 1 or ' +  state.word.length}
+                }
+            }
+
             const isCorrect = guess.toUpperCase() === state.word;
 
             return {
@@ -124,7 +135,7 @@ export const gameReducer = (state, action) => {
                 attempts: state.attempts + 1,
                 gameStatus: isCorrect ? GAME_STATUS.WON : GAME_STATUS.PLAYING,
                 displayWord: isCorrect ? state.word.split('') : state.displayWord,
-                error: isCorrect ? null : 'Incorrect guess!'
+                error: {...state.error, guess: isCorrect ? null : 'Incorrect guess!'}
             };
         }
 
@@ -163,7 +174,7 @@ export const gameReducer = (state, action) => {
         case GAME_ACTIONS.CLEAR_ERROR:
             return {
                 ...state,
-                error: null
+                error: {}
             };
 
         default:

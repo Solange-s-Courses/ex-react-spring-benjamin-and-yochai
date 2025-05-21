@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {GAME_ACTIONS} from "../reducers/gameReducer";
 
 /**
  * Component for guessing the full word
@@ -9,7 +10,7 @@ import React, { useState } from 'react';
  * @param {boolean} props.disabled - Whether input should be disabled
  * @returns {JSX.Element} The word guess component
  */
-function WordLetterGuess({ onGuessWord, onGuessLetter, disabled }) {
+function WordLetterGuess({ onGuessWord, onGuessLetter, disabled, validationError, dispatch }) {
     const [guess, setGuess] = useState('');
 
     /**
@@ -19,13 +20,22 @@ function WordLetterGuess({ onGuessWord, onGuessLetter, disabled }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (guess.trim()) {
-            if(guess.trim().length === 1){
-                onGuessLetter(guess.trim());
+            if(/^[a-zA-Z]+$/.test(guess.trim())){
+                if(guess.trim().length === 1){
+                    onGuessLetter(guess.trim());
+                }
+                else {
+                    onGuessWord(guess.trim());
+                }
+                setGuess('');
             }
-            else{
-                onGuessWord(guess.trim());
+            else {
+                dispatch({
+                    type: GAME_ACTIONS.SET_ERROR,
+                    payload: {name: 'validation', message: 'Guess can contain only letters'}
+                });
             }
-            setGuess('');
+
         }
     };
 
@@ -52,6 +62,7 @@ function WordLetterGuess({ onGuessWord, onGuessLetter, disabled }) {
                         Guess
                     </button>
                 </div>
+                <div className={"text-danger"}>{validationError}</div>
             </form>
         </div>
     );

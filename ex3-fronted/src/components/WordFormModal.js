@@ -105,11 +105,11 @@ function WordFormModal({
         <>
         {editingWord && (
         <div
-            className="modal flex items-center justify-center "
+            className="modal flex items-center justify-center fade"
             id="wordModal"
             //tabIndex="-1"
         >
-            <div className="modal-dialog">
+            <div className="modal-dialog bg-secondary-subtle">
                 <div className="modal-header flex justify-between items-center">
                     <h3 className="text-lg font-medium">
                         {Object.entries(editingWord).length > 0 ? 'Edit Item' : 'Add New Item'}

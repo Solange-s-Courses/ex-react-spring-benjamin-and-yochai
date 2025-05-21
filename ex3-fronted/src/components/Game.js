@@ -94,25 +94,11 @@ function Game() {
         } catch (error) {
             dispatch({ //לעבור על זה, בפועל לא באמת נראה את השגיאה.
                 type: GAME_ACTIONS.SET_ERROR,
-                payload: 'Failed to leave game properly. Redirecting to home...'
+                payload: {name: 'saving', message: 'Failed to leave game properly. Redirecting to home...'}
             });
         } finally {
             navigate('/');
         }
-    };
-
-    /**
-     * Handle starting a new game
-     */
-    const handleNewGame = () => {
-        navigate('/');
-    };
-
-    /**
-     * Handle showing leaderboard
-     */
-    const handleShowLeaderboard = () => {
-        navigate('/leaderboard');
     };
 
     // Loading state
@@ -127,11 +113,11 @@ function Game() {
     }
 
     // Error state
-    if (state.error && state.gameStatus !== GAME_STATUS.PLAYING) {
+    if (state.error?.fatal && state.gameStatus !== GAME_STATUS.PLAYING) {
         return (
             <div className="container text-center mt-5">
                 <div className="alert alert-danger" role="alert">
-                    {state.error}
+                    {state.error.fatal}
                 </div>
                 <button className="btn btn-primary" onClick={handleLeaveGame}>
                     Return to Home
@@ -145,8 +131,6 @@ function Game() {
         return (
             <GameResult
                 gameState={state}
-                onNewGame={handleNewGame}
-                onShowLeaderboard={handleShowLeaderboard}
             />
         );
     }
@@ -171,9 +155,9 @@ function Game() {
             />
 
             {/* Error message */}
-            {state.error && state.gameStatus === GAME_STATUS.PLAYING && (
+            {state.error?.guess && state.gameStatus === GAME_STATUS.PLAYING && (
                 <div className="alert alert-warning alert-dismissible fade show">
-                    {state.error}
+                    {state.error.guess}
                 </div>
             )}
 
@@ -200,6 +184,8 @@ function Game() {
                 onGuessWord={handleWordGuess}
                 onGuessLetter={handleLetterGuess}
                 disabled={state.gameStatus !== GAME_STATUS.PLAYING}
+                validationError={state.error?.validation || ''}
+                dispatch = {dispatch}
             />
         </Layout>
     );

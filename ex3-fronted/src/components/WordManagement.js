@@ -92,6 +92,16 @@ function WordManagement() {
     const fetchError = categoriesError || wordsError;
 
     return (
+        <>
+            {/*<WordFormModal
+                categories={categories || []}
+                onAddWord={handleAddWord}
+                onUpdateWord={handleUpdateWord}
+                editingWord={editingWord}
+                setEditingWord={setEditingWord}
+                isSubmitting={isSubmitting}
+                existingWords={words || []}
+                />*/}
         <Layout title="Word Management">
             {fetchError && <div className="alert alert-danger">{fetchError}</div>}
 
@@ -135,7 +145,8 @@ function WordManagement() {
             />
             */}
                     </Layout>
-                );
+            </>
+    );
             }
 
             export default WordManagement;

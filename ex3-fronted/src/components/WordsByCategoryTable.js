@@ -48,7 +48,7 @@ function WordsByCategoryTable({
                 <tbody>
                 {
                     Object.entries(wordsByCategory).map(([category, words])=> (
-                        <React.Fragment key={category}>
+                        <React.Fragment>
                             <tr key={"category:"+category} className='thead table-secondary'>
                                 <th colSpan='3' className="text-center" >{category}</th>
                             </tr>
