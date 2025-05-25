@@ -31,34 +31,31 @@ function WordManagement() {
     const sendRequest = async (method, data) =>{
         setIsSubmitting(true);
         setFetchError(null);
+        let success = true;
         try {
             const res = await axios('/admin/words', {
                 method,
                 data: data
             });
         }catch(err){
-            console.log("Error response:", err.response);
-            console.log("Error data:", err.response?.data);
-
+            success = false;
             if (err.response?.data) {
-                const errorMessage = err.response.data.error;
+                const errorMessage = err.response.data.message;
                 setFetchError(errorMessage);
 
             } else {
-                setFetchError(err.message);
-                console.log("Setting error to:", err.message);
-
+                setFetchError("Something went wrong. please try again later");
             }
 
         }finally {
-            console.log("Final fetchError:", fetchError);
-
             setIsSubmitting(false);
         }
+        return success;
     }
 
     useEffect(() => {
         setTrigger(crypto.randomUUID());
+        setFetchError(null);
     }, [editingWord])
 
     const isLoading = categoriesLoading || wordsLoading;

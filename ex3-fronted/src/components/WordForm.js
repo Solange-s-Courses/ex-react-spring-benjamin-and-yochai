@@ -83,16 +83,12 @@ function WordForm({
             category: (formData.category === 'other' ? formData.customCategory.trim().toLowerCase() : formData.category.trim().toLowerCase())
         };
 
-        try {
-            const method = isEditing ? 'PUT' : 'POST';
-            await sendRequest(method, wordData);
+        const method = isEditing ? 'PUT' : 'POST';
+        const success = await sendRequest(method, wordData);
 
+        if (success) {
             setFormData({});
             setEditingWord(null);
-
-
-        } catch (error) {
-            console.error('Error submitting form:', error);
         }
     };
 
