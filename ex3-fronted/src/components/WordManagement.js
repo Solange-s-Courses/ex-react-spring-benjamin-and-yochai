@@ -41,7 +41,7 @@ function WordManagement() {
             console.log("Error data:", err.response?.data);
 
             if (err.response?.data) {
-                const errorMessage = err.response.data.error;
+                const errorMessage = err.response.data.message;
                 setFetchError(errorMessage);
 
             } else {

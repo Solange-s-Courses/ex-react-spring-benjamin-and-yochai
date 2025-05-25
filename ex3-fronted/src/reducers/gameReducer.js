@@ -170,7 +170,7 @@ export const gameReducer = (state, action) => {
             return {
                 ...state,
                 guessedLetters: newGuessedLetters,
-                attempts: state.attempts,
+                attempts: state.attempts + 1,
                 displayWord: newDisplayWord,
                 gameStatus: isGameWon ? GAME_STATUS.WON : GAME_STATUS.PLAYING,
                 error: {}
