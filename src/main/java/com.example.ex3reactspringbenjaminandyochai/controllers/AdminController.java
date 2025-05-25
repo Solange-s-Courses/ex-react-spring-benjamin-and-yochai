@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -33,6 +35,7 @@ public class AdminController {
         try {
             wordsService.addWord(newWord);
         } catch (IllegalArgumentException e) {
+            //throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -72,8 +75,29 @@ public class AdminController {
         }
     }
 
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
+    /*@ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
     public ResponseEntity<String> handleAllExceptions(Exception ex) {
         return ResponseEntity.badRequest().body("Invalid request: " + ex.getMessage());
+    }*/
+
+    /*@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return ResponseEntity.badRequest().body("Invalid request: " + ex.getMessage());
+    }*/
+
+    /*@ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.badRequest().body(error);
+    }*/
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, String>> handleResponseStatus(ResponseStatusException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getReason());
+        return ResponseEntity.status(ex.getStatusCode()).body(error);
     }
+
 }
+

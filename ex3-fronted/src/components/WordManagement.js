@@ -24,8 +24,23 @@ function WordManagement() {
                 data: data
             });
         }catch(err){
-            setFetchError("Couldn't process your request, please try again later");
+            console.log("Error response:", err.response);
+            console.log("Error data:", err.response?.data);
+
+            if (err.response?.data) {
+                const errorMessage = err.response.data.error;
+                setFetchError(errorMessage);
+
+            } else {
+                setFetchError(err.message);
+                console.log("Setting error to:", err.message);
+
+            }
+            //setFetchError(err.response?.data || err.message);
+            //setFetchError(/*"Couldn't process your request, please try again later"*/err.message);
         }finally {
+            console.log("Final fetchError:", fetchError);
+
             setIsSubmitting(false);
         }
     }
@@ -39,8 +54,12 @@ function WordManagement() {
     return (
 
         <Layout title={"Word Management"}>
+            {/*{(fetchError || categoriesError || wordsError) &&
+                <div className="alert alert-danger">something went wrong {fetchError}</div>}*/}
             {(fetchError || categoriesError || wordsError) &&
-                <div className="alert alert-danger">something went wrong {fetchError}</div>}
+                <div className="alert alert-danger">
+                    {typeof fetchError === 'object' ? fetchError.message : fetchError}
+                </div>}
 
             {editingWord ?
                 <WordForm

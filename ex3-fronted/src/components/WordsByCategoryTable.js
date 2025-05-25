@@ -38,17 +38,21 @@ function WordsByCategoryTable({
                 <tbody>
                 {
                     Object.entries(wordsByCategory).map(([category, words])=> (
-                        <>
-                            <tr key={"category:"+category} className='thead table-secondary'>
-                                <th colSpan='3' className="text-center" >{category}</th>
+                        <React.Fragment key={category}>
+                            <tr className='thead table-secondary'>
+                                <th colSpan='3' className="text-center">{category}</th>
                             </tr>
+                            {/*<tr key={"category:"+category} className='thead table-secondary'>
+                                <th colSpan='3' className="text-center" >{category}</th>
+                            </tr>*/}
                             {words.map(word => (
                                 <WordRow
+                                    key={word.word}
                                     word={word}
                                     onDelete={onDelete}
                                     onEdit={onEdit}/>
                             ))}
-                        </>
+                        </React.Fragment>
                     ))
                 }
                 </tbody>
