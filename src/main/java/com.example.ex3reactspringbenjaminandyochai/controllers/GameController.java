@@ -7,9 +7,7 @@ import com.example.ex3reactspringbenjaminandyochai.services.ScoreService;
 import com.example.ex3reactspringbenjaminandyochai.services.WordsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -58,11 +56,6 @@ public class GameController {
     @GetMapping("/leaderboard")
     public List<ScoreEntry> getScoreboard(){
         return scoreService.getScores();
-    }
-
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
-    public ResponseEntity<String> handleAllExceptions(Exception ex) {
-        return ResponseEntity.badRequest().body("Invalid request: " + ex.getMessage());
     }
 
 }

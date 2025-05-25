@@ -1,6 +1,5 @@
 package com.example.ex3reactspringbenjaminandyochai.controllers;
 
-import com.example.ex3reactspringbenjaminandyochai.dao.WordDeleteDao;
 import com.example.ex3reactspringbenjaminandyochai.services.WordsService;
 import com.example.ex3reactspringbenjaminandyochai.model.WordEntry;
 
@@ -36,7 +35,7 @@ public class AdminController {
             wordsService.addWord(newWord);
         } catch (IllegalArgumentException e) {
             //throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -57,7 +56,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/words")
-    public void deleteWord(@RequestBody WordDeleteDao wordToDelete) {
+    public void deleteWord(@RequestBody WordEntry wordToDelete) {
         try {
             String word = wordToDelete.getWord();
             if (word == null || word.isEmpty()) {
@@ -73,30 +72,6 @@ public class AdminController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    }
-
-    /*@ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
-    public ResponseEntity<String> handleAllExceptions(Exception ex) {
-        return ResponseEntity.badRequest().body("Invalid request: " + ex.getMessage());
-    }*/
-
-    /*@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        return ResponseEntity.badRequest().body("Invalid request: " + ex.getMessage());
-    }*/
-
-    /*@ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.badRequest().body(error);
-    }*/
-
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, String>> handleResponseStatus(ResponseStatusException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getReason());
-        return ResponseEntity.status(ex.getStatusCode()).body(error);
     }
 
 }
