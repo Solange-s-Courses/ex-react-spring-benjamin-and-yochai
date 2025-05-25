@@ -10,22 +10,20 @@ function WordRow({ word, onEdit, onDelete, isSubmitting }) {
                     <button 
                         className="btn btn-primary"
                         onClick={() => onEdit(word)}
-                        /*data-bs-toggle="modal"
-                        data-bs-target="#wordModal"*/
-                        disabled={isSubmitting}
+                        //disabled={isSubmitting}
                     >
                         Edit
                     </button>
                     <button 
                         className="btn btn-danger"
-                        onClick={() => onDelete(word.word)}
-                        disabled={isSubmitting}
+                        onClick={() => onDelete(word)}
+                        //disabled={isSubmitting}
                     >
                         Delete
                     </button>
                 </div>
             </td>
-        </tr>
+      </tr>
     );
 }
 

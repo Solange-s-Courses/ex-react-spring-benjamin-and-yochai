@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import axios from "axios";
 
-export function useFetch(url) {
+export function useGetReq(url, trigger) {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [fatalError, setFatalError] = useState(null);
@@ -10,6 +11,10 @@ export function useFetch(url) {
             setIsLoading(true);
             setFatalError(null);
             try {
+                const response = await axios.get(url);
+                setData(response.data);
+
+                /*
                 const response = await fetch(url);
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -19,12 +24,12 @@ export function useFetch(url) {
                 }
                 const result = await response.json();
                 setData(result);
-                if (!result /*|| result.length === 0*/) {
+                if (!result /*|| result.length === 0* /) {
                     throw new Error('something went wrong, please try again later.');
-                }
+
+                 }*/
             } catch (error) {
-                console.error('Error fetching data:', error);
-                setFatalError(error.message);
+                setFatalError('something went wrong, please try again later');
                 setData([]);
             } finally {
                 setIsLoading(false);
@@ -32,7 +37,7 @@ export function useFetch(url) {
         };
 
         fetchData();
-    }, [url]);
+    }, [url, trigger]);
 
     return { data, isLoading, fatalError: fatalError, setFatalError: setFatalError };
 } 

@@ -1,9 +1,10 @@
 import React from "react";
 import Layout from "./Layout";
-import { useFetch } from "../hooks/useFetch";
+import { useGetReq } from "../hooks/useGetReq";
+import Spinner from "./Spinner";
 
 function Leaderboard(){
-    const { data: leaderboard, isLoading, fatalError } = useFetch('/game/leaderboard');
+    const { data: leaderboard, isLoading, fatalError } = useGetReq('/game/leaderboard');
 
     return (
         <Layout title={"Leader Board"}>
@@ -11,9 +12,7 @@ function Leaderboard(){
                 <div className='alert alert-danger'>{fatalError}</div>
                 :
                 isLoading ?
-                    <div className="d-flex justify-content-center">
-                        <div className="spinner-border" role="status"/>
-                    </div>
+                    <Spinner />
                     :
                     leaderboard.length > 0 ?
                         <table className="table table-striped">

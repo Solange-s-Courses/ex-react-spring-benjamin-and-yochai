@@ -2,11 +2,9 @@ import React from "react";
 import WordRow from "./WordRow";
 
 function WordsByCategoryTable({
-                                  categories,
                                   words,
                                   onEdit,
                                   onDelete,
-                                  isLoading,
                                   isSubmitting
     }){
 
@@ -19,13 +17,6 @@ function WordsByCategoryTable({
         return acc;
     }, {});
 
-    if (isLoading) {
-        return (
-            <div className="d-flex justify-content-center">
-                <div className="spinner-border" role="status"/>
-            </div>
-        );
-    }
 
     if (words.length === 0) {
         return (
@@ -48,7 +39,7 @@ function WordsByCategoryTable({
                 <tbody>
                 {
                     Object.entries(wordsByCategory).map(([category, words])=> (
-                        <React.Fragment>
+                        <>
                             <tr key={"category:"+category} className='thead table-secondary'>
                                 <th colSpan='3' className="text-center" >{category}</th>
                             </tr>
@@ -59,7 +50,7 @@ function WordsByCategoryTable({
                                     onDelete={onDelete}
                                     onEdit={onEdit}/>
                             ))}
-                        </React.Fragment>
+                        </>
                     ))
                 }
                 </tbody>

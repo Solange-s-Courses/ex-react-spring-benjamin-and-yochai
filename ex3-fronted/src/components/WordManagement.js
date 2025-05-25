@@ -1,19 +1,37 @@
 import React, { useState } from 'react';
 import Layout from './Layout';
 import WordForm from './WordForm';
-import WordCategoryList from './WordCategoryList';
-import { useFetch } from '../hooks/useFetch';
+import { useGetReq } from '../hooks/useGetReq';
 import WordsByCategoryTable from "./WordsByCategoryTable";
-import WordFormModal from "./WordFormModal";
+import Spinner from "./Spinner";
+import axios from "axios";
 
 
 function WordManagement() {
-    const { data: categories, isLoading: categoriesLoading, fetchError: categoriesError } = useFetch('/game/categories');
-    const { data: words, isLoading: wordsLoading, fetchError: wordsError, setFetchError } = useFetch('/admin/words');
-
     const [editingWord, setEditingWord] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [fetchError, setFetchError] = useState(null);
+    const [trigger, setTrigger] = useState(null);
+    const { data: categories, isLoading: categoriesLoading, fetchError: categoriesError } = useGetReq('/game/categories', trigger);
+    const { data: words, isLoading: wordsLoading, fetchError: wordsError } = useGetReq('/admin/words', trigger);
 
+    const sendRequest = async (method, data) =>{
+        setIsSubmitting(true);
+        setFetchError(null);
+        try {
+            const res = await axios('/admin/words', {
+                method,
+                data: data
+            });
+            //window.location.reload();
+        }catch(err){
+            setFetchError("Couldn't process your request, please try again later");
+        }finally {
+            setIsSubmitting(false);
+            setTrigger(data);
+        }
+    }
+/*
     const handleAddWord = async (wordData) => {
         setIsSubmitting(true);
         try {
@@ -29,6 +47,7 @@ function WordManagement() {
 
             // Reload to refresh data
             window.location.reload();
+
             return true;
         } catch (error) {
             console.error('Error adding word:', error);
@@ -39,16 +58,13 @@ function WordManagement() {
         }
     };
 
-    const handleUpdateWord = async (originalWord, newWordData) => {
+    const handleUpdateWord = async (newWordData) => {
         setIsSubmitting(true);
         try {
             const response = await fetch('/admin/words/update', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    originalWord,
-                    newWord: newWordData
-                })
+                body: newWordData
             });
 
             if (!response.ok) {
@@ -87,66 +103,53 @@ function WordManagement() {
             setFetchError(error.message);
         }
     };
-
+*/
     const isLoading = categoriesLoading || wordsLoading;
-    const fetchError = categoriesError || wordsError;
+    //const fetchError = categoriesError || wordsError;
+    //setFetchError( categoriesError + wordsError);
 
     return (
-        <>
-            {/*<WordFormModal
-                categories={categories || []}
-                onAddWord={handleAddWord}
-                onUpdateWord={handleUpdateWord}
-                editingWord={editingWord}
-                setEditingWord={setEditingWord}
-                isSubmitting={isSubmitting}
-                existingWords={words || []}
-                />*/}
-        <Layout title="Word Management">
-            {fetchError && <div className="alert alert-danger">{fetchError}</div>}
 
-            <WordForm
-                categories={categories || []}
-                onAddWord={handleAddWord}
-                onUpdateWord={handleUpdateWord}
-                editingWord={editingWord}
-                setEditingWord={setEditingWord}
-                isSubmitting={isSubmitting}
-                existingWords={words || []}
-            />
-            {/*
-            <WordFormModal
+        <Layout title={"Word Management"}>
+            {(fetchError || categoriesError || wordsError) &&
+                <div className="alert alert-danger">something went wrong {fetchError}</div>}
+
+            {isLoading?
+                <Spinner />
+                :
+                editingWord ?
+                    <WordForm
                         categories={categories || []}
-                        onAddWord={handleAddWord}
-                        onUpdateWord={handleUpdateWord}
+                        sendRequest={sendRequest}
+                        //onAddWord={async (word) => {await sendRequest('post', word)}}
+                        //onUpdateWord={handleUpdateWord}
                         editingWord={editingWord}
                         setEditingWord={setEditingWord}
                         isSubmitting={isSubmitting}
                         existingWords={words || []}
                     />
-*/}
+                    :
+                    <>
+                        <div className={"d-flex justify-content-end align-items-end mb-2"}>
+                            <button className="btn btn-success btn-sm" onClick={() => {
+                                setFetchError(null);
+                                setEditingWord({});
+                            }}>
+                                NEW WORD
+                            </button>
+                        </div>
 
-                    <WordsByCategoryTable
-                        categories={categories || []}
-                        words={words || []}
-                        onEdit={setEditingWord}
-                        onDelete={handleDeleteWord}
-                        isLoading={isLoading}
-                        isSubmitting={isSubmitting}
-                    />
-                    {/*
-            <WordCategoryList
-                categories={categories || []}
-                words={words || []}
-                onEdit={setEditingWord}
-                onDelete={handleDeleteWord}
-                isLoading={isLoading}
-                isSubmitting={isSubmitting}
-            />
-            */}
-                    </Layout>
-            </>
-    );
+                        <WordsByCategoryTable
+                            words={words || []}
+                            onEdit={setEditingWord}
+                            onDelete={async(word)=> {await sendRequest('delete', word)}}
+                            isSubmitting={isSubmitting}
+                        />
+                    </>
             }
+        </Layout>
 
-            export default WordManagement;
+    );
+}
+
+export default WordManagement;

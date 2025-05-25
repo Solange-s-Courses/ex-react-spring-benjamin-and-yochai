@@ -1,6 +1,6 @@
 package com.example.ex3reactspringbenjaminandyochai.controllers;
 
-import com.example.ex3reactspringbenjaminandyochai.dao.WordData;
+import com.example.ex3reactspringbenjaminandyochai.dao.WordDeleteDao;
 import com.example.ex3reactspringbenjaminandyochai.services.WordsService;
 import com.example.ex3reactspringbenjaminandyochai.model.WordEntry;
 
@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -27,59 +28,54 @@ public class AdminController {
         return wordsService.getAllWords();
     }
 
-    @PostMapping("/words/add")
-    public ResponseEntity<WordEntry> addWord(@RequestBody WordData wordData) {
+    @PostMapping("/words")
+    public void addWord(@RequestBody WordEntry newWord) {
         try {
-            WordEntry word = new WordEntry(wordData.getCategory(), wordData.getWord(), wordData.getHint());
-            wordsService.addWord(word);
-            return ResponseEntity.status(HttpStatus.CREATED).body(word);
+            //WordEntry word = new WordEntry(wordData.getCategory(), wordData.getWord(), wordData.getHint());
+            wordsService.addWord(newWord);
+            //return ResponseEntity.status(HttpStatus.CREATED).body(word);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    @PutMapping("/words/update")
-    public ResponseEntity<WordEntry> updateWord(@RequestBody WordData wordData) {
+    @PutMapping("/words")
+    public void updateWord(@RequestBody WordEntry updatedWord) {
         try {
-            WordEntry newWord = new WordEntry(
-                    wordData.getCategory(),
-                    wordData.getWord(),
-                    wordData.getHint()
-            );
+            wordsService.updateWord(updatedWord);
 
-            boolean updated = wordsService.updateWord(wordData.getOriginalWord(), newWord);
-            if (!updated) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(newWord);
+        }catch (ClassNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    @DeleteMapping("/words/delete")
-    public ResponseEntity<Void> deleteWord(@RequestBody WordData wordData) {
+    @DeleteMapping("/words")
+    public void deleteWord(@RequestBody WordDeleteDao wordToDelete) {
         try {
-            String word = wordData.getWord();
+            String word = wordToDelete.getWord();
             if (word == null || word.isEmpty()) {
-                return ResponseEntity.badRequest().build();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No word to delete");
             }
 
-            boolean deleted = wordsService.deleteWord(word);
-            if (!deleted) {
-                return ResponseEntity.notFound().build();
-            }
+            wordsService.deleteWord(word);
 
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (ClassNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
+    public ResponseEntity<String> handleAllExceptions(Exception ex) {
+        return ResponseEntity.badRequest().body("Invalid request: " + ex.getMessage());
     }
 }

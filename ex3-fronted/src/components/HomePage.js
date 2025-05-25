@@ -4,12 +4,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import StartForm from "./StartForm";
 import Layout from "./Layout";
-import { useFetch } from "../hooks/useFetch";
+import { useGetReq } from "../hooks/useGetReq";
 import axios from 'axios';
+import Spinner from "./Spinner";
 
 function HomePage() {
     const navigate = useNavigate();
-    const { data: categories, isLoading, fatalError, setFatalError } = useFetch('/game/categories');
+    const { data: categories, isLoading, fatalError, setFatalError } = useGetReq('/game/categories');
     const [formData, setFormData] = useState({nickname: "", category: ""});
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,7 +72,6 @@ function HomePage() {
 
         try {
             const gameData = await startNewGame(formData.nickname.trim(), formData.category);
-            console.log("gameData returned from API:", gameData);
 
             navigate('/game', {
                 state: {
@@ -114,9 +114,7 @@ function HomePage() {
             {fatalError && <div className='alert alert-danger'>{fatalError}</div>}
 
             {isLoading ?
-                <div className="d-flex justify-content-center">
-                    <div className="spinner-border" role="status"/>
-                </div>
+                <Spinner />
                 :
                 <StartForm
                     errors={errors}

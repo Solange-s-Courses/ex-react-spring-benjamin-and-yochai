@@ -38,55 +38,50 @@ public class WordsService {
     public synchronized void addWord(WordEntry word) throws IllegalArgumentException, IOException {
         validateWordEntry(word);
 
+        loadWordsFromFile();
+
         // Check for duplicate
         if (wordExists(word.getWord())) {
             throw new IllegalArgumentException("Word already exists");
         }
 
-        loadWordsFromFile();
         words.add(word);
         saveWordsToFile();
     }
 
-    public synchronized boolean updateWord(String originalWord, WordEntry newWord) throws IllegalArgumentException, IOException {
-        validateWordEntry(newWord);
-
-        // Check for duplicate only if the word has changed
-        if (!originalWord.equalsIgnoreCase(newWord.getWord()) && wordExists(newWord.getWord())) {
-            throw new IllegalArgumentException("New word already exists");
-        }
+    public synchronized void updateWord(WordEntry updatedWord) throws IllegalArgumentException, ClassNotFoundException, IOException {
+        validateWordEntry(updatedWord);
 
         loadWordsFromFile();
 
         // Find the index of the word to update
         int indexToUpdate = -1;
         for (int i = 0; i < words.size(); i++) {
-            if (words.get(i).getWord().equalsIgnoreCase(originalWord)) {
+            if (words.get(i).getWord().equalsIgnoreCase(updatedWord.getWord())) {
                 indexToUpdate = i;
                 break;
             }
         }
 
         if (indexToUpdate != -1) {
-            words.set(indexToUpdate, newWord);
+            words.set(indexToUpdate, updatedWord);
             saveWordsToFile();
-            return true;
+            return;
         }
-
-        return false;
+        throw new ClassNotFoundException("No word to update");
     }
 
-    public synchronized boolean deleteWord(String word) throws IOException{
+    public synchronized void deleteWord(String word) throws ClassNotFoundException, IOException{
         if (word == null || word.trim().isEmpty()) {
             throw new IllegalArgumentException("Word cannot be empty");
         }
 
         loadWordsFromFile();
         boolean removed = words.removeIf(w -> w.getWord().equalsIgnoreCase(word));
-        if (removed) {
-            saveWordsToFile();
+        if (!removed) {
+            throw new ClassNotFoundException("Word not found");
         }
-        return removed;
+        saveWordsToFile();
     }
 
     public synchronized List<String> getAllCategories() {
