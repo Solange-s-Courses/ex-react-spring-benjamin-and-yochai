@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -10,9 +10,11 @@ import Spinner from "./Spinner";
 
 function HomePage() {
     const navigate = useNavigate();
-    const { data: categories, isLoading, fatalError, setFatalError } = useGetReq('/game/categories');
+    const [trigger, setTrigger] = useState(null);
+    const { data: categories, isLoading, fatalError, setFatalError } = useGetReq('/game/categories', trigger);
     const [formData, setFormData] = useState({nickname: "", category: ""});
     const [errors, setErrors] = useState({});
+    const [firstLoad, setFirstLoad] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const validateForm = () => {
@@ -32,31 +34,14 @@ function HomePage() {
         return Object.keys(newErrors).length === 0;
     }
 
+    useEffect(() => {
+        setFirstLoad(false);
+    }, [isLoading])
+
 
     const startNewGame = async (nickname, category) => {
-        //try{
-            const response = await axios.post('/game/start', {nickname, category});
-            return response.data;
-        //} catch (error) {
-
-        //}
-
-        /*const response = await fetch('/game/start', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nickname: nickname.trim(), category })
-        });
-
-
-        if (!response.ok) {
-            // need to add messages in backend-----------------------------------------------------
-            const error = new Error(/*data.message ||* / 'Cannot start game');
-            error.status = response.status;
-            throw error;
-        }
-        const data = await response.json();
-
-        return data;*/
+        const response = await axios.post('/game/start', {nickname, category});
+        return response.data;
     };
 
     // Handle form submission
@@ -82,7 +67,7 @@ function HomePage() {
             });
 
         } catch (err) {
-            if(err.status === 404 || err.status === 409) {
+            if(err.status === 404) {
                 setErrors({...errors, general: err.message});
             } else {
                 setFatalError(err.message);
@@ -113,7 +98,7 @@ function HomePage() {
 
             {fatalError && <div className='alert alert-danger'>{fatalError}</div>}
 
-            {isLoading ?
+            {firstLoad ?
                 <Spinner />
                 :
                 <StartForm
@@ -123,6 +108,7 @@ function HomePage() {
                     disabled={!!fatalError || isSubmitting}
                     categories={categories}
                     formData={formData}
+                    reload={()=>setTrigger(crypto.randomUUID())}
                 />
             }
         </Layout>

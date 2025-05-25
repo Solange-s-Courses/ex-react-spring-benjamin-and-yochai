@@ -31,9 +31,7 @@ public class AdminController {
     @PostMapping("/words")
     public void addWord(@RequestBody WordEntry newWord) {
         try {
-            //WordEntry word = new WordEntry(wordData.getCategory(), wordData.getWord(), wordData.getHint());
             wordsService.addWord(newWord);
-            //return ResponseEntity.status(HttpStatus.CREATED).body(word);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

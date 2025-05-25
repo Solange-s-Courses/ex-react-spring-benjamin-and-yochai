@@ -1,7 +1,5 @@
 package com.example.ex3reactspringbenjaminandyochai.services;
 
-import com.example.ex3reactspringbenjaminandyochai.dao.FormData;
-import com.example.ex3reactspringbenjaminandyochai.dao.GameData;
 import com.example.ex3reactspringbenjaminandyochai.model.ScoreEntry;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -20,19 +18,6 @@ public class ScoreService {
         loadFromFile();
     }
 
-    public synchronized boolean isNicknameUnique(String nickname) {
-        return scores.stream().noneMatch(entry -> entry.getNickname().equalsIgnoreCase(nickname));
-    }
-
-    /*
-    public synchronized void registerNickname(FormData formData) {
-        loadFromFile();
-        //check if unique
-        scores.add(new ScoreEntry(formData.getNickname(), 0, formData.getCategory()));
-        saveToFile();
-    }
-
-     */
 
     public synchronized void register(ScoreEntry gameData) throws IOException {
         loadFromFile();
@@ -59,18 +44,10 @@ public class ScoreService {
         loadFromFile();
         return scores;
     }
-/*
-    public boolean deleteGame(String nickname) {
-        loadFromFile();
-        boolean removed = scores.removeIf(entry -> entry.getNickname().equalsIgnoreCase(nickname));
-        saveToFile();
 
-        return removed;
-    }
-*/
     private void loadFromFile() {
         File file = new File(FILE_PATH);
-        //if (!file.exists()) return;
+
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Object obj = ois.readObject();
             if (obj instanceof List) {

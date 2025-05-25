@@ -36,7 +36,8 @@ public class WordsService {
     }
 
     public synchronized void addWord(WordEntry word) throws IllegalArgumentException, IOException {
-        validateWordEntry(word);
+        //validateWordEntry(word);
+        word.validate();
 
         loadWordsFromFile();
 
@@ -50,7 +51,8 @@ public class WordsService {
     }
 
     public synchronized void updateWord(WordEntry updatedWord) throws IllegalArgumentException, ClassNotFoundException, IOException {
-        validateWordEntry(updatedWord);
+        //validateWordEntry(updatedWord);
+        updatedWord.validate();
 
         loadWordsFromFile();
 
@@ -100,7 +102,7 @@ public class WordsService {
         loadWordsFromFile();
         return words.stream().anyMatch(w -> w.getWord().equalsIgnoreCase(word));
     }
-
+/*
     // Centralized validation method
     private void validateWordEntry(WordEntry wordEntry) {
         if (wordEntry == null) {
@@ -128,7 +130,7 @@ public class WordsService {
             throw new IllegalArgumentException("Category can only contain letters a-z");
         }
     }
-
+*/
     private void loadWordsFromFile() {
         File file = new File(FILE_PATH);
 

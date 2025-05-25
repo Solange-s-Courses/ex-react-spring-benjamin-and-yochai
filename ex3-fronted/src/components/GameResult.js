@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import { GAME_STATUS } from '../reducers/gameReducer';
 import Layout from "./Layout";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";

@@ -3,8 +3,6 @@ import React from 'react';
 function WordForm({
                       categories,
                       sendRequest,
-                      //onAddWord,
-                      //onUpdateWord,
                       editingWord,
                       setEditingWord,
                       isSubmitting,
@@ -12,29 +10,8 @@ function WordForm({
                   }) {
     const [formData, setFormData] = React.useState({ ...editingWord });
     const [errors, setErrors] = React.useState({});
-
     const isEditing = Object.keys(editingWord).length !== 0;
 
-/*    // Update form data when editing a word
-    React.useEffect(() => {
-        if (editingWord) {
-            setFormData({
-                word: editingWord.word,
-                hint: editingWord.hint,
-                category: editingWord.category,
-                newCategory: ''
-            });
-        } else {
-            setFormData({
-                word: '',
-                hint: '',
-                category: '',
-                newCategory: ''
-            });
-        }
-        setErrors({});
-    }, [editingWord]);
-*/
     const validateForm = () => {
         const newErrors = {};
         const wordPattern = /^[a-zA-Z]+$/;
@@ -98,17 +75,6 @@ function WordForm({
             console.error('Error submitting form:', error);
         }
     };
-
-    /*const handleCancel = () => {
-        setFormData({
-            word: '',
-            hint: '',
-            category: '',
-            newCategory: ''
-        });
-        setEditingWord(null);
-        setErrors({});
-    };*/
 
     return (
         <div className="card mb-4">
@@ -184,24 +150,6 @@ function WordForm({
                         <div className="invalid-feedback">{errors.category}</div>
                     </div>
 
-                    {/* New category input
-                    <div className="mb-3">
-                        <label htmlFor="newCategory" className="form-label">Or Create New Category</label>
-                        <input
-                            type="text"
-                            className={`form-control ${errors.newCategory ? 'is-invalid' : ''}`}
-                            id="newCategory"
-                            name="newCategory"
-                            value={formData.newCategory}
-                            onChange={handleChange}
-                            placeholder="Enter new category (a-z letters only)"
-                            disabled={isSubmitting}
-                            pattern="[a-zA-Z]*"
-                        />
-                        <div className="invalid-feedback">{errors.newCategory}</div>
-                    </div>
-                    */}
-
                     {/* Submit buttons */}
                     <div className="d-flex gap-2">
                         <button
@@ -221,7 +169,9 @@ function WordForm({
                         <button
                             className="btn btn-secondary"
                             type="button"
-                            onClick={()=> setEditingWord(null)}
+                            onClick={()=> {
+                                setEditingWord(null);
+                            }}
                             disabled={isSubmitting}
                         >
                             Cancel

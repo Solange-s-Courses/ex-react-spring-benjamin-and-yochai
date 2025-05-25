@@ -4,8 +4,7 @@ import WordRow from "./WordRow";
 function WordsByCategoryTable({
                                   words,
                                   onEdit,
-                                  onDelete,
-                                  isSubmitting
+                                  onDelete
     }){
 
     const wordsByCategory = words.reduce((acc, word) => {
@@ -46,7 +45,6 @@ function WordsByCategoryTable({
                             {words.map(word => (
                                 <WordRow
                                     word={word}
-                                    isSubmitting={isSubmitting}
                                     onDelete={onDelete}
                                     onEdit={onEdit}/>
                             ))}

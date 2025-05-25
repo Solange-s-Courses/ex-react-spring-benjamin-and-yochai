@@ -57,7 +57,6 @@ public class WordInit {
             System.out.println("Successfully initialized words file with " + initialWords.size() + " words");
         } catch (IOException e) {
             System.err.println("Error creating words file: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }

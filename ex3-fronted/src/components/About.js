@@ -81,11 +81,8 @@ const About = () => {
             </section>
 
             <section className="text-center mt-5">
-                <h4 className="text-secondary">👨‍💻 Contributors</h4>
-                <p className="text-muted">
-                    Developed as part of <strong>Internet Programming B</strong> course<br/>
-                    Academic Year 2024-2025
-                </p>
+                <h4 className="text-secondary">👨‍💻 Submitting</h4>
+
                 <div className="d-flex justify-content-center gap-5 mt-3 ">
                     <div>
                         <strong>Yochai Benita</strong><br/>

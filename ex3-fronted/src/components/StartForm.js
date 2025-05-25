@@ -1,6 +1,6 @@
 import React from "react";
 
-function StartForm({errors, handleChange, handleSubmit, disabled, categories, formData}) {
+function StartForm({errors, handleChange, handleSubmit, disabled, categories, formData, reload}) {
     return (
         <form onSubmit={handleSubmit} className="text-start">
             <div className="mb-3">
@@ -15,7 +15,6 @@ function StartForm({errors, handleChange, handleSubmit, disabled, categories, fo
                     onChange={handleChange}
                     placeholder="Enter your nickname"
                     disabled={disabled}
-                    required
                 />
                 <div className="invalid-feedback">{errors.nickname}</div>
             </div>
@@ -28,8 +27,8 @@ function StartForm({errors, handleChange, handleSubmit, disabled, categories, fo
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
+                    onClick={reload}
                     disabled={disabled}
-
                 >
                     <option value="">Select a category</option>
                     {Object.entries(categories).map(([key, value]) => (

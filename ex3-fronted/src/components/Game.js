@@ -4,15 +4,13 @@ import gameReducer, { initialGameState, GAME_ACTIONS, GAME_STATUS } from '../red
 import WordDisplay from './WordDisplay';
 import HintSection from './HintSection';
 import GameStats from './GameStats';
-//import LetterButtons from './LetterButtons';
 import WordLetterGuess from './WordLetterGuess';
 import GameResult from './GameResult';
 import Layout from "./Layout";
-import { mockAPI } from "../gameData";
 import { useGameInitialization } from '../hooks/useGameInitialization';
 import { useGameTimer } from '../hooks/useGameTimer';
-import { useScoreCalculation } from '../hooks/useScoreCalculation';
 import { useErrorHandling } from '../hooks/useErrorHandling';
+import Spinner from "./Spinner";
 
 /**
  * Main Game component that manages the word guessing game with pure reducer
@@ -26,30 +24,7 @@ function Game() {
     // Custom hooks for game logic
     useGameInitialization(state, dispatch, navigate);
     useGameTimer(state.gameStatus, dispatch);
-    useScoreCalculation(state.gameStatus, state, dispatch, navigate);
     useErrorHandling(state.error, dispatch);
-
-    /**
-     * Start a new game by fetching a random word
-     * @param {string} category - The category to fetch word from
-     */
-    /*const startNewGame = async (category) => {
-        dispatch({ type: GAME_ACTIONS.SET_LOADING, payload: true });
-
-        try {
-            const wordData = await mockAPI.getRandomWord(category);
-            dispatch({
-                type: GAME_ACTIONS.SET_WORD_DATA,
-                payload: wordData
-            });
-        } catch (err) {
-            dispatch({
-                type: GAME_ACTIONS.SET_ERROR,
-                payload: err.message
-            });
-            setTimeout(() => navigate('/'), 3000);
-        }
-    };*/
 
     /**
      * Handle letter guess
@@ -80,35 +55,10 @@ function Game() {
         dispatch({ type: GAME_ACTIONS.SHOW_HINT });
     };
 
-    /**
-     * Handle leaving the game
-     */
-    const handleLeaveGame = async () => {
-        try {
-            const response = await fetch(`/game/delete?nickname=${state.playerName}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok) {
-                throw new Error('Failed to delete game');
-            }
-        } catch (error) {
-            dispatch({ //לעבור על זה, בפועל לא באמת נראה את השגיאה.
-                type: GAME_ACTIONS.SET_ERROR,
-                payload: {name: 'saving', message: 'Failed to leave game properly. Redirecting to home...'}
-            });
-        } finally {
-            navigate('/');
-        }
-    };
-
     // Loading state
     if (state.loading) {
         return (
-            <div className="container text-center mt-5">
-                <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </div>
-            </div>
+            <Spinner />
         );
     }
 
@@ -119,7 +69,7 @@ function Game() {
                 <div className="alert alert-danger" role="alert">
                     {state.error.fatal}
                 </div>
-                <button className="btn btn-primary" onClick={handleLeaveGame}>
+                <button className="btn btn-primary" onClick={()=> navigate('/')}>
                     Return to Home
                 </button>
             </div>
@@ -140,7 +90,7 @@ function Game() {
         <Layout title={
             <div className="d-flex justify-content-between align-items-center">
                 <span>Word Guessing Game</span>
-                <button className="btn btn-danger btn-sm" onClick={handleLeaveGame}>
+                <button className="btn btn-danger btn-sm" onClick={()=> navigate('/')}>
                     Leave Game
                 </button>
             </div>
@@ -170,14 +120,6 @@ function Game() {
                 hint={state.hint}
                 onShowHint={handleShowHint}
             />
-
-            {/* Letter guessing */}
-            {/*<LetterButtons
-                                guessedLetters={state.guessedLetters}
-                                word={state.word}
-                                onGuess={handleLetterGuess}
-                                disabled={state.gameStatus !== GAME_STATUS.PLAYING}
-                            />*/}
 
             {/* Word guessing */}
             <WordLetterGuess

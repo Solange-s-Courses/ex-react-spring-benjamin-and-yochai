@@ -20,6 +20,4 @@ public class FormData {
         this.category = category;
     }
 
-
-
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WordRow({ word, onEdit, onDelete, isSubmitting }) {
+function WordRow({ word, onEdit, onDelete }) {
     return (
         <tr key={word.word}>
             <td>{word.word}</td>
@@ -10,14 +10,12 @@ function WordRow({ word, onEdit, onDelete, isSubmitting }) {
                     <button 
                         className="btn btn-primary"
                         onClick={() => onEdit(word)}
-                        //disabled={isSubmitting}
                     >
                         Edit
                     </button>
                     <button 
                         className="btn btn-danger"
                         onClick={() => onDelete(word)}
-                        //disabled={isSubmitting}
                     >
                         Delete
                     </button>
