@@ -4,11 +4,20 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 /**
- * Component for displaying game results
- * @component
+ * GameResult Component - Displays game completion results
+ * 
+ * This component shows the game completion screen that:
+ * - Displays the final word and game statistics
+ * - Calculates and shows the player's score
+ * - Saves the score to the leaderboard
+ * - Shows time played, attempts, and hint usage
+ * - Provides navigation to leaderboard and home
+ * - Handles score saving and error states
+ * 
+ * @returns {Element} The rendered GameResult component with game statistics and navigation
+ * @constructor
  * @param {Object} props - Component props
- * @param {Object} props.gameState - Current game state
- * @returns {JSX.Element} The game result component
+ * @param {Object} props.gameState - Current game state containing game statistics
  */
 function GameResult({ gameState}) {
     const navigate = useNavigate();

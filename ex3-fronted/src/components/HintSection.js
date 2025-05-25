@@ -1,13 +1,21 @@
 import React from 'react';
 
 /**
- * Component for displaying hints
- * @component
+ * HintSection Component - Displays and manages game hints
+ * 
+ * This component provides a hint system that:
+ * - Shows a button to reveal hints
+ * - Displays hint text in a styled alert
+ * - Handles hint visibility state
+ * - Maintains consistent styling
+ * - Provides clear user feedback
+ * 
+ * @returns {Element} The rendered HintSection component with hint controls
+ * @constructor
  * @param {Object} props - Component props
- * @param {boolean} props.showHint - Whether to show the hint
- * @param {string} props.hint - The hint text
- * @param {Function} props.onShowHint - Function to handle showing hint
- * @returns {JSX.Element} The hint section component
+ * @param {boolean} props.showHint - Whether the hint is currently visible
+ * @param {string} props.hint - The hint text to display
+ * @param {Function} props.onShowHint - Callback for showing the hint
  */
 function HintSection({ showHint, hint, onShowHint }) {
     return (

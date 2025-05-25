@@ -1,6 +1,23 @@
 import React from "react";
 import WordRow from "./WordRow";
 
+/**
+ * WordsByCategoryTable Component - Displays words organized by categories
+ * 
+ * This component renders a structured table view that:
+ * - Groups words by their categories
+ * - Displays word and hint information
+ * - Provides edit and delete actions for each word
+ * - Shows a message when no words are available
+ * - Maintains responsive table layout
+ * 
+ * @returns {Element} The rendered WordsByCategoryTable component with categorized word list
+ * @constructor
+ * @param {Object} props - Component props
+ * @param {Array} props.words - List of word objects to display
+ * @param {Function} props.onEdit - Callback for editing a word
+ * @param {Function} props.onDelete - Callback for deleting a word
+ */
 function WordsByCategoryTable({
                                   words,
                                   onEdit,
@@ -8,7 +25,7 @@ function WordsByCategoryTable({
     }){
 
     const wordsByCategory = words.reduce((acc, word) => {
-        const category = word.category.toLowerCase(); // normalize case if needed
+        const category = word.category.toLowerCase();
         if (!acc[category]) {
             acc[category] = [];
         }
@@ -42,9 +59,6 @@ function WordsByCategoryTable({
                             <tr className='thead table-secondary'>
                                 <th colSpan='3' className="text-center">{category}</th>
                             </tr>
-                            {/*<tr key={"category:"+category} className='thead table-secondary'>
-                                <th colSpan='3' className="text-center" >{category}</th>
-                            </tr>*/}
                             {words.map(word => (
                                 <WordRow
                                     key={word.word}

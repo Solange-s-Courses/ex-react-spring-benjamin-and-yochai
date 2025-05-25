@@ -12,9 +12,25 @@ import ErrorPage from "./components/ErrorPage";
 
 
 /**
- * Main App component that sets up routing and navigation
+ * App Component - Root component of the word guessing game application
+ * 
+ * This component serves as the main entry point that:
+ * - Sets up the application routing structure
+ * - Configures Bootstrap styling
+ * - Manages navigation between different game sections
+ * - Handles 404 errors with ErrorPage
+ * - Provides consistent layout across all pages
+ * 
+ * Routes:
+ * - /: HomePage - Game start and rules
+ * - /game: Game - Main gameplay interface
+ * - /leaderboard: Leaderboard - Player rankings
+ * - /admin: WordManagement - Word database management
+ * - /about: About - Game information and credits
+ * - /*: ErrorPage - 404 not found handler
+ * 
  * @component
- * @returns {JSX.Element} The main application component
+ * @returns {JSX.Element} The main application component with routing setup
  */
 function App() {
     return (

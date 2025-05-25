@@ -8,6 +8,18 @@ import { useGetReq } from "../hooks/useGetReq";
 import axios from 'axios';
 import Spinner from "./Spinner";
 
+/**
+ * HomePage Component - The main landing page of the word guessing game
+ * 
+ * This component serves as the entry point to the game, displaying:
+ * - Game rules and instructions
+ * - A form for players to enter their nickname and select a word category
+ * - Handles form validation and game initialization
+ * - Manages navigation to the game page
+ * 
+ * @returns {Element} The rendered HomePage component with game rules and start form
+ * @constructor
+ */
 function HomePage() {
     const navigate = useNavigate();
     const [trigger, setTrigger] = useState(null);

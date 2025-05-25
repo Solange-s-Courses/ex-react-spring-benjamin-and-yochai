@@ -2,6 +2,20 @@ import React from 'react';
 import { FaCheckCircle, FaClock, FaLightbulb, FaTimesCircle, FaTrophy, FaBook, FaTools } from 'react-icons/fa';
 import Layout from "./Layout";
 
+/**
+ * About Component - Information page about the game
+ * 
+ * This component displays comprehensive information about the game including:
+ * - Game rules and how to play
+ * - Scoring system explanation
+ * - Game features and capabilities
+ * - Developer contact information
+ * - Visual icons for better user experience
+ * - Responsive layout for all screen sizes
+ * 
+ * @returns {Element} The rendered About component with game information
+ * @constructor
+ */
 const About = () => {
     return (
         <Layout title="About">

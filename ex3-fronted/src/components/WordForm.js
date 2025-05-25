@@ -1,5 +1,25 @@
 import React from 'react';
 
+/**
+ * WordForm Component - Form for adding and editing words in the game database
+ * 
+ * This component provides a comprehensive form interface for:
+ * - Adding new words with associated hints and categories
+ * - Editing existing words and their properties
+ * - Validating word format (letters only)
+ * - Managing custom categories
+ * - Handling both creation and update operations
+ * 
+ * @returns {Element} The rendered WordForm component with input fields and validation
+ * @constructor
+ * @param {Object} props - Component props
+ * @param {Array} props.categories - List of available word categories
+ * @param {Function} props.sendRequest - Function to send API requests
+ * @param {Object} props.editingWord - Word object being edited (empty for new words)
+ * @param {Function} props.setEditingWord - Function to update editing state
+ * @param {boolean} props.isSubmitting - Loading state indicator
+ * @param {Array} props.existingWords - List of existing words for validation
+ */
 function WordForm({
                       categories,
                       sendRequest,

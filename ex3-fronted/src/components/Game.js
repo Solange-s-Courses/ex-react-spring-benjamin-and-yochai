@@ -13,9 +13,18 @@ import { useErrorHandling } from '../hooks/useErrorHandling';
 import Spinner from "./Spinner";
 
 /**
- * Main Game component that manages the word guessing game with pure reducer
- * @component
- * @returns {JSX.Element} The game component
+ * Game Component - Main game component that manages the word guessing game
+ * 
+ * This component orchestrates the core game mechanics including:
+ * - Word display and letter guessing
+ * - Game state management using reducer
+ * - Timer and score tracking
+ * - Hint system
+ * - Error handling and game status updates
+ * - Navigation between game states (playing, won, error)
+ * 
+ * @returns {Element} The rendered Game component with game interface and controls
+ * @constructor
  */
 function Game() {
     const navigate = useNavigate();
