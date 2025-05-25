@@ -6,7 +6,20 @@ import WordsByCategoryTable from "./WordsByCategoryTable";
 import Spinner from "./Spinner";
 import axios from "axios";
 
-
+/**
+ * WordManagement Component - Administrative interface for managing game words
+ * 
+ * This component provides a complete word management system including:
+ * - Display of all words organized by categories
+ * - Adding new words through a form interface
+ * - Editing existing words and their properties
+ * - Deleting words from the database
+ * - Error handling and loading states
+ * - Real-time updates of the word list
+ * 
+ * @returns {Element} The rendered WordManagement component with word list and management controls
+ * @constructor
+ */
 function WordManagement() {
     const [editingWord, setEditingWord] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,8 +49,7 @@ function WordManagement() {
                 console.log("Setting error to:", err.message);
 
             }
-            //setFetchError(err.response?.data || err.message);
-            //setFetchError(/*"Couldn't process your request, please try again later"*/err.message);
+
         }finally {
             console.log("Final fetchError:", fetchError);
 
@@ -54,8 +66,6 @@ function WordManagement() {
     return (
 
         <Layout title={"Word Management"}>
-            {/*{(fetchError || categoriesError || wordsError) &&
-                <div className="alert alert-danger">something went wrong {fetchError}</div>}*/}
             {(fetchError || categoriesError || wordsError) &&
                 <div className="alert alert-danger">
                     {typeof fetchError === 'object' ? fetchError.message : fetchError}

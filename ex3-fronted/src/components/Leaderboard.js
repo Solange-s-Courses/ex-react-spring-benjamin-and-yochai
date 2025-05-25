@@ -3,6 +3,20 @@ import Layout from "./Layout";
 import { useGetReq } from "../hooks/useGetReq";
 import Spinner from "./Spinner";
 
+/**
+ * Leaderboard Component - Displays player rankings
+ * 
+ * This component shows the game's leaderboard that:
+ * - Fetches and displays player scores
+ * - Sorts players by score in descending order
+ * - Shows player nicknames and their scores
+ * - Handles loading and error states
+ * - Provides a responsive table layout
+ * - Updates in real-time with new scores
+ * 
+ * @returns {Element} The rendered Leaderboard component with player rankings
+ * @constructor
+ */
 function Leaderboard(){
     const { data: leaderboard, isLoading, fatalError } = useGetReq('/game/leaderboard');
 

@@ -2,9 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 /**
- * Navigation bar component using Bootstrap
- * @component
- * @returns {JSX.Element} The navigation bar
+ * Layout Component - Main application layout wrapper
+ * 
+ * This component provides the main application structure that:
+ * - Includes a responsive navigation bar
+ * - Wraps content in a consistent card layout
+ * - Provides navigation links to all main sections
+ * - Maintains consistent styling across pages
+ * - Handles responsive design for all screen sizes
+ * - Includes a footer with game message
+ * 
+ * @returns {Element} The rendered Layout component with navigation and content wrapper
+ * @constructor
+ * @param {Object} props - Component props
+ * @param {string|Element} props.title - Page title to display
+ * @param {Element} props.children - Child components to render
  */
 const Layout = ({title, children}) => {
     return (

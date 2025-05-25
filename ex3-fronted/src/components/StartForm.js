@@ -1,5 +1,27 @@
 import React from "react";
 
+/**
+ * StartForm Component - Form for starting a new game
+ * 
+ * This component provides a form interface that:
+ * - Collects player nickname with validation
+ * - Allows selection of word category
+ * - Handles form submission and validation
+ * - Displays error messages
+ * - Supports form state management
+ * - Provides real-time category updates
+ * 
+ * @returns {Element} The rendered StartForm component with game initialization form
+ * @constructor
+ * @param {Object} props - Component props
+ * @param {Object} props.errors - Form validation errors
+ * @param {Function} props.handleChange - Input change handler
+ * @param {Function} props.handleSubmit - Form submission handler
+ * @param {boolean} props.disabled - Form disabled state
+ * @param {Array} props.categories - Available word categories
+ * @param {Object} props.formData - Current form data
+ * @param {Function} props.reload - Function to reload categories
+ */
 function StartForm({errors, handleChange, handleSubmit, disabled, categories, formData, reload}) {
     return (
         <form onSubmit={handleSubmit} className="text-start">

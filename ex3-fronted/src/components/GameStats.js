@@ -1,14 +1,22 @@
 import React from 'react';
 
 /**
- * Component for displaying game statistics
- * @component
+ * GameStats Component - Displays current game statistics
+ * 
+ * This component shows real-time game information including:
+ * - Player name and selected category
+ * - Current game time in MM:SS format
+ * - Number of attempts made
+ * - Updates dynamically during gameplay
+ * - Maintains consistent styling
+ * 
+ * @returns {Element} The rendered GameStats component with game information
+ * @constructor
  * @param {Object} props - Component props
  * @param {string} props.playerName - Name of the player
- * @param {string} props.category - Selected category
+ * @param {string} props.category - Selected word category
  * @param {number} props.time - Game time in seconds
- * @param {number} props.attempts - Number of attempts
- * @returns {JSX.Element} The game stats component
+ * @param {number} props.attempts - Number of attempts made
  */
 function GameStats({ playerName, category, time, attempts }) {
     /**

@@ -1,8 +1,30 @@
 /**
- * Pure game reducer for managing game state
+ * Game Reducer - Manages the state of the word guessing game
+ * 
+ * This reducer handles all game state changes including:
+ * - Game initialization and setup
+ * - Letter and word guessing logic
+ * - Score tracking and timer updates
+ * - Error handling and hint system
+ * - Game status management
+ * 
  * All side effects should be handled outside the reducer
  */
 
+/**
+ * Game Action Types
+ * @constant
+ * @type {Object}
+ * @property {string} INIT_GAME - Initialize new game state
+ * @property {string} SET_ERROR - Set error message
+ * @property {string} GUESS_LETTER - Process letter guess
+ * @property {string} GUESS_WORD - Process word guess
+ * @property {string} SHOW_HINT - Show game hint
+ * @property {string} UPDATE_TIMER - Update game timer
+ * @property {string} SET_GAME_STATUS - Change game status
+ * @property {string} SET_SCORE - Update game score
+ * @property {string} CLEAR_ERROR - Clear error messages
+ */
 export const GAME_ACTIONS = {
     INIT_GAME: 'INIT_GAME',
     SET_ERROR: 'SET_ERROR',
@@ -15,6 +37,15 @@ export const GAME_ACTIONS = {
     CLEAR_ERROR: 'CLEAR_ERROR'
 };
 
+/**
+ * Game Status Enum
+ * @constant
+ * @type {Object}
+ * @property {string} IDLE - Game not started
+ * @property {string} LOADING - Game is loading
+ * @property {string} PLAYING - Game in progress
+ * @property {string} WON - Game completed successfully
+ */
 export const GAME_STATUS = {
     IDLE: 'idle',
     LOADING: 'loading',
@@ -22,6 +53,23 @@ export const GAME_STATUS = {
     WON: 'won',
 };
 
+/**
+ * Initial Game State
+ * @constant
+ * @type {Object}
+ * @property {string} word - The word to guess
+ * @property {Array} displayWord - Array of characters showing guessed letters
+ * @property {Array} guessedLetters - Array of letters already guessed
+ * @property {number} attempts - Number of attempts made
+ * @property {number} gameTime - Time elapsed in seconds
+ * @property {string} gameStatus - Current game status
+ * @property {string} hint - Game hint text
+ * @property {boolean} showHint - Whether hint is visible
+ * @property {number} score - Current game score
+ * @property {Object} error - Error messages
+ * @property {string} category - Word category
+ * @property {string} playerName - Player's name
+ */
 export const initialGameState = {
     word: '',
     displayWord: [],
@@ -38,7 +86,19 @@ export const initialGameState = {
 };
 
 /**
- * Pure game reducer function - no side effects
+ * Game Reducer Function
+ * 
+ * Pure function that handles all game state transitions:
+ * - INIT_GAME: Sets up new game with word and player info
+ * - SET_ERROR: Adds error message to state
+ * - GUESS_LETTER: Processes single letter guess
+ * - GUESS_WORD: Processes full word guess
+ * - SHOW_HINT: Reveals game hint
+ * - UPDATE_TIMER: Increments game time
+ * - SET_SCORE: Updates game score
+ * - SET_GAME_STATUS: Changes game state
+ * - CLEAR_ERROR: Removes error messages
+ * 
  * @param {Object} state - Current game state
  * @param {Object} action - Action object with type and payload
  * @returns {Object} New game state
