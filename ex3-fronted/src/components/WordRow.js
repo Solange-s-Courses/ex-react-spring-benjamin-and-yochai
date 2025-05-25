@@ -2,7 +2,7 @@ import React from 'react';
 
 function WordRow({ word, onEdit, onDelete, isSubmitting }) {
     return (
-        <tr key={word.word}>
+        <tr>{/*key={word.word}>*/}
             <td>{word.word}</td>
             <td>{word.hint}</td>
             <td>

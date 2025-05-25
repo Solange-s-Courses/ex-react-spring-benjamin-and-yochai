@@ -15,7 +15,6 @@ function StartForm({errors, handleChange, handleSubmit, disabled, categories, fo
                     onChange={handleChange}
                     placeholder="Enter your nickname"
                     disabled={disabled}
-                    required
                 />
                 <div className="invalid-feedback">{errors.nickname}</div>
             </div>
