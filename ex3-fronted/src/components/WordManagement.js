@@ -49,12 +49,13 @@ function WordManagement() {
             });
         }catch(err){
             success = false;
-            if (err.response?.data) {
+            if (err.response.status !== 500) {
                 const errorMessage = err.response.data.message;
                 setFetchError(errorMessage);
 
             } else {
                 setFetchError("Something went wrong. please try again later");
+
             }
 
         }finally {
