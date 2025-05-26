@@ -8,20 +8,36 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Pattern;
 
+/**
+ * Service class for managing word data.
+ * Handles loading and saving words from/to a file.
+ */
 @Service
 public class WordsService {
     private final String FILE_PATH = "words.ser";
     private List<WordEntry> words = new ArrayList<>();
     private final Random random = new Random();
-    private static final Pattern ALPHA_PATTERN = Pattern.compile("^[a-zA-Z]+$");
 
+    /**
+     * Default contractor
+     */
+    public WordsService() {}
+
+    /**
+     * Initializes the words service by loading words from the file.
+     */
     @PostConstruct
     public void init() {
         loadWordsFromFile();
     }
 
+    /**
+     * Retrieves a random word from the specified category.
+     *
+     * @param category The category of the word to retrieve
+     * @return A random WordEntry object from the specified category
+     */
     public synchronized WordEntry getRandomWord(String category) {
         loadWordsFromFile();
 
@@ -35,6 +51,13 @@ public class WordsService {
         return filtered.get(random.nextInt(filtered.size()));
     }
 
+    /**
+     * Adds a new word entry to the service.
+     *
+     * @param word The WordEntry object to add
+     * @throws IllegalArgumentException if the word already exists
+     * @throws IOException if an I/O error occurs
+     */
     public synchronized void addWord(WordEntry word) throws IllegalArgumentException, IOException {
         //validateWordEntry(word);
         word.validate();
@@ -50,6 +73,14 @@ public class WordsService {
         saveWordsToFile();
     }
 
+    /**
+     * Updates an existing word entry in the service.
+     *
+     * @param updatedWord The WordEntry object to update
+     * @throws IllegalArgumentException if the word already exists
+     * @throws ClassNotFoundException if the word is not found
+     * @throws IOException if an I/O error occurs
+     */
     public synchronized void updateWord(WordEntry updatedWord) throws IllegalArgumentException, ClassNotFoundException, IOException {
         //validateWordEntry(updatedWord);
         updatedWord.validate();
@@ -73,6 +104,13 @@ public class WordsService {
         throw new ClassNotFoundException("No word to update");
     }
 
+    /**
+     * Deletes a word entry from the service.
+     *
+     * @param word The word to delete
+     * @throws ClassNotFoundException if the word is not found
+     * @throws IOException if an I/O error occurs
+     */
     public synchronized void deleteWord(String word) throws ClassNotFoundException, IOException{
         if (word == null || word.trim().isEmpty()) {
             throw new IllegalArgumentException("Word cannot be empty");
@@ -86,16 +124,32 @@ public class WordsService {
         saveWordsToFile();
     }
 
+    /**
+     * Retrieves all unique categories from the words in the service.
+     *
+     * @return A list of all unique categories
+     */
     public synchronized List<String> getAllCategories() {
         loadWordsFromFile();
         return words.stream().map(WordEntry::getCategory).distinct().toList();
     }
 
+    /**
+     * Retrieves all words from the service.
+     *
+     * @return A list of all words
+     */
     public synchronized List<WordEntry> getAllWords() {
         loadWordsFromFile();
         return new ArrayList<>(words);
     }
 
+    /**
+     * Checks if a word exists in the service.
+     *
+     * @param word The word to check
+     * @return true if the word exists, false otherwise
+     */
     public synchronized boolean wordExists(String word) {
         if (word == null) return false;
 
@@ -131,6 +185,9 @@ public class WordsService {
         }
     }
 */
+    /**
+     * Loads words from the file.
+     */
     private void loadWordsFromFile() {
         File file = new File(FILE_PATH);
 
@@ -145,6 +202,11 @@ public class WordsService {
         }
     }
 
+    /**
+     * Saves words to the file.
+     *
+     * @throws IOException if an I/O error occurs
+     */ 
     private void saveWordsToFile() throws IOException{
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(words);

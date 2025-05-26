@@ -24,6 +24,13 @@ function WordsByCategoryTable({
                                   onDelete
     }){
 
+    /**
+     * Groups words by their categories
+     * 
+     * This function groups words by their categories.
+     * It creates an object where each key is a category and the value is an array of words in that category.
+     * 
+     */
     const wordsByCategory = words.reduce((acc, word) => {
         const category = word.category.toLowerCase();
         if (!acc[category]) {

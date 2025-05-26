@@ -32,6 +32,13 @@ function WordForm({
     const [errors, setErrors] = React.useState({});
     const isEditing = Object.keys(editingWord).length !== 0;
 
+    /**
+     * Validates the form data
+     * 
+     * This function validates the form data to ensure that the word and hint are valid.
+     * It checks that the word is not empty and contains only letters, and that the hint is not empty.
+     * 
+     */
     const validateForm = () => {
         const newErrors = {};
         const wordPattern = /^[a-zA-Z]+$/;
@@ -65,11 +72,25 @@ function WordForm({
         return Object.keys(newErrors).length === 0;
     };
 
+    /**
+     * Handles the change of the form data
+     * 
+     * This function handles the change of the form data when the user types in the word or hint.
+     * It updates the form data and clears the errors.
+     * 
+     */
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value});
         setErrors({});
     };
 
+    /**
+     * Handles the submission of the form
+     * 
+     * This function handles the submission of the form when the user clicks the "Add Word" or "Update Word" button.
+     * It validates the form data, sends the data to the server, and updates the form data.
+     * 
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
 

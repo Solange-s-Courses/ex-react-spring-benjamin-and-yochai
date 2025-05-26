@@ -35,6 +35,14 @@ function GameResult({ gameState}) {
     const [message, setMessage] = useState("Saving score");
     const [score, setScore] = useState('');
 
+    /**
+     * Calculates the final score based on game statistics
+     * 
+     * This function calculates the final score by applying penalties for time, attempts, and hint usage.
+     * It ensures the score is not negative.
+     * 
+     * @returns {number} The final score
+     */ 
     useEffect(() => {
         const baseScore = 1000;
         const timePenalty = gameState.gameTime * 2;

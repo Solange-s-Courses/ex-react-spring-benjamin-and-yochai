@@ -28,6 +28,16 @@ function WordManagement() {
     const { data: categories, isLoading: categoriesLoading, fetchError: categoriesError } = useGetReq('/game/categories', trigger);
     const { data: words, isLoading: wordsLoading, fetchError: wordsError } = useGetReq('/admin/words', trigger);
 
+    /**
+     * Sends a request to the server to add or update a word
+     * 
+     * This function sends a request to the server to add or update a word.
+     * It sets the submitting state to true, clears any fetch error, and attempts to send the request.
+     * 
+     * @param {string} method The HTTP method to use (POST or PUT)
+     * @param {Object} data The data to send to the server
+     * @returns {Promise<boolean>} True if the request was successful, false otherwise
+     */
     const sendRequest = async (method, data) =>{
         setIsSubmitting(true);
         setFetchError(null);
@@ -53,6 +63,13 @@ function WordManagement() {
         return success;
     }
 
+    /**
+     * Sets the trigger to a new random UUID when the editing word changes
+     * 
+     * This function sets the trigger to a new random UUID when the editing word changes.
+     * the trigger is used to trigger a re-fetch of the words and categories.
+     * It also clears any fetch error.
+     */
     useEffect(() => {
         setTrigger(crypto.randomUUID());
         setFetchError(null);

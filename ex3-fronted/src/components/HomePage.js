@@ -29,6 +29,14 @@ function HomePage() {
     const [firstLoad, setFirstLoad] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    /**
+     * Validates the form data
+     * 
+     * This function validates the form data to ensure that the nickname and category are valid.
+     * It checks that the nickname is not empty and contains only letters, and that the category is not empty.
+     * 
+     * @returns {boolean} True if the form data is valid, false otherwise
+     */
     const validateForm = () => {
         const newErrors = {};
 
@@ -46,15 +54,27 @@ function HomePage() {
         return Object.keys(newErrors).length === 0;
     }
 
+    /**
+     * Sets the first load state to false when the categories are loaded for the first time
+     */
     useEffect(() => {
         setFirstLoad(false);
     }, [isLoading])
 
-
+    /**
+     * Starts a new game
+     * 
+     * This function starts a new game by sending a POST request to the server.
+     * It sends the nickname and category to the server and returns the game data.
+     * 
+     * @param {string} nickname The nickname of the player
+     * @param {string} category The category of the game
+     * @returns {Promise<Object>} The game data
+     */ 
     const startNewGame = async (nickname, category) => {
         const response = await axios.post('/game/start', {nickname, category});
         return response.data;
-    };
+    }
 
     // Handle form submission
     const handleSubmit = async(e) => {
@@ -89,6 +109,13 @@ function HomePage() {
         }
     };
 
+    /**
+     * Handles the change of the form data
+     * 
+     * This function handles the change of the form data when the user types in the nickname or category.
+     * It updates the form data and clears the errors.
+     * 
+     */
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value});
         setErrors({});
@@ -128,3 +155,4 @@ function HomePage() {
 }
 
 export default HomePage;
+

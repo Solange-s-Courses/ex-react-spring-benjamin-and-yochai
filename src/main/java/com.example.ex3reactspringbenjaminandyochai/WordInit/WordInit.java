@@ -14,6 +14,16 @@ import java.util.List;
 public class WordInit {
     private static final String WORDS_FILE = "words.ser";
 
+    /**
+     * Default contractor
+     */
+    public WordInit() {}
+
+    /**
+     * Main method to initialize the words file with some default words
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         List<WordEntry> initialWords = new ArrayList<>();
 
